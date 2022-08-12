@@ -1,16 +1,18 @@
-import { IInputs, IOutputs } from "./generated/ManifestTypes";
-import { HelloWorld, IHelloWorldProps } from "./HelloWorld";
-import * as React from "react";
+import { IInputs, IOutputs } from './generated/ManifestTypes';
+import { DataSetGrid, IDataSetProps } from './Dataset';
+import * as React from 'react';
+// import { CommandBarItems } from "./CommandBarConfig";
+// import { CommandBarBasicExample } from "./CommandBar";
 
 export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
     private notifyOutputChanged: () => void;
+    private selectedRow: any;
 
     /**
      * Empty constructor.
      */
     constructor() { }
-
     /**
      * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
      * Data-set values are not initialized here, use updateView.
@@ -19,11 +21,11 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
      * @param state A piece of data that persists in one session for a single user. Can be set at any point in a controls life cycle by calling 'setControlState' in the Mode interface.
      */
     public init(
-        context: ComponentFramework.Context<IInputs>,
-        notifyOutputChanged: () => void,
-        state: ComponentFramework.Dictionary
+      context: ComponentFramework.Context<IInputs>,
+      notifyOutputChanged: () => void,
+      state: ComponentFramework.Dictionary
     ): void {
-        this.notifyOutputChanged = notifyOutputChanged;
+      this.notifyOutputChanged = notifyOutputChanged;
     }
 
     /**
@@ -31,11 +33,28 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
      * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
      * @returns ReactElement root react element for the control
      */
-    public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-        const props: IHelloWorldProps = { name: 'Hello, World!' };
-        return React.createElement(
-            HelloWorld, props
-        );
+    public updateView(
+      context: ComponentFramework.Context<IInputs>): React.ReactElement {
+      // if (!this.isFetched) {
+      //   retrieveNotesFromDynamics(this.selectedRow.id).then(data => {
+      //     this.data = data;
+      //     this.isFetched = !this.isFetched;
+      //     this.notifyOutputChanged();
+      //   });
+      // }
+
+      const props: IDataSetProps = {
+        dataset: context.parameters.dataset,
+        context,
+        // notes,
+        onXButtonClick: item => {
+          this.selectedRow = item;
+          this.notifyOutputChanged();
+        },
+      };
+
+      console.log('UpdateView');
+      return React.createElement(DataSetGrid, props);
     }
 
     /**
@@ -43,7 +62,7 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
      * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as “bound” or “output”
      */
     public getOutputs(): IOutputs {
-        return { };
+      return { };
     }
 
     /**
@@ -51,6 +70,6 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
      * i.e. cancelling any pending remote calls, removing listeners, etc.
      */
     public destroy(): void {
-        // Add code to cleanup control if necessary
+      // Add code to cleanup control if necessary
     }
 }
