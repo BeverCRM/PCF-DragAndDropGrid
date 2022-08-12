@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Callout, CommandBar, DefaultButton, DetailsList,
-  DetailsListLayoutMode, FocusTrapCallout, FocusZone,
+  DetailsListLayoutMode, FocusZone,
   FocusZoneTabbableElements, FontWeights, IconButton,
-  IDetailsListProps, IDetailsRowProps, IDragDropContext,
-  IDragDropEvents, IIconProps, initializeIcons, Link, mergeStyles, mergeStyleSets,
-  PrimaryButton, SearchBox, Spinner, SpinnerSize, Stack } from '@fluentui/react';
+  IDragDropContext,
+  IDragDropEvents, IIconProps, initializeIcons, mergeStyles, mergeStyleSets,
+  PrimaryButton, SearchBox, Stack } from '@fluentui/react';
 import {
   CommandBarAndSearchBoxStyles,
   CommandBarFarItems,
   CommandBarItems,
   CommandBarOverflowProps,
   CommandBarStyles,
-  DetailsListStyles,
   MainDivStyles,
   SearchBoxStyles,
 } from './CommandBarConfig';
@@ -28,7 +27,7 @@ type DataSet = ComponentFramework.PropertyTypes.DataSet;
 export interface IDataSetProps {
   dataset: DataSet;
   context: any;
-  onXButtonClick: (e: any) => void, // not implemeted yet
+  onXButtonClick: (e: any) => void, // not implemeted yet (data optimization)
   // notes: any[]
 }
 
@@ -41,7 +40,7 @@ async function uploadFile(context: any, files: any, dataset: any, item: any) {
     const targetEntityName = context.parameters.dataset?.getTargetEntityType();
     body = arrayBufferToBase64(body);
 
-    console.log(`base64 string = ${body.toString('base64')}`);
+    console.log(`base64 string = ${body.toString('base64')}`); // is it safe to use just body.toString?
     const data: any = {
       filename: newFile.name,
       subject: '',
@@ -52,7 +51,6 @@ async function uploadFile(context: any, files: any, dataset: any, item: any) {
     console.log(data);
   });
   // const newFileName: string = overrideFileName(record, file.name);
-  
 }
 
 function getDragDropEvents(dataset: any, context: any): IDragDropEvents {
@@ -85,12 +83,12 @@ function getDragDropEvents(dataset: any, context: any): IDragDropEvents {
   };
 }
 
-export function refreshGrid(dataset: any) {
+export function refreshGrid(dataset: any) { // not implemented yet
   return dataset.refresh();
 }
 // .filter(i => { console.log(i); })
 
-function search(newValue: any, dataset: DataSet, items: any, setItems: any) {
+function search(newValue: any, dataset: DataSet, items: any, setItems: any) { // not implemented yet
   console.log(dataset);
   console.log(dataset.sortedRecordIds);
   console.log('New Value is:');
@@ -159,7 +157,7 @@ async function getRecordRelatedNotes(context: any, item: any, targetEntityType: 
   return recordRelatedNotes;
 }
 
-async function getAllRelatedNotes(context: any, item: any, targetEntityType: any){
+async function getAllRelatedNotes(context: any, item: any, targetEntityType: any) { // not implemented yet
 
 }
 
@@ -174,7 +172,7 @@ function deleteNotes(context: any, noteIds: any[]) {
   }
 }
 
-
+// (fix warning and remove eslint-disable)
 // eslint-disable-next-line react/display-name
 export const DataSetGrid = React.memo(({
   dataset,
@@ -188,7 +186,6 @@ export const DataSetGrid = React.memo(({
 
   console.log('Dataset Items');
   console.log(items);
-  console.log('ok');
 
   const deleteButtonStyles = mergeStyles({
 
@@ -206,7 +203,7 @@ export const DataSetGrid = React.memo(({
       maxWidth: 50,
       isResizable: false,
       onClick: (item: any) => { console.log('The item is:'); console.log(item); },
-      onRender: (item: any) => {
+      onRender: (item: any) => { // Move into sepereate modules
         const [noteItems, setNoteItems] = React.useState<any>([]);
 
         const [isCalloutVisible, { toggle: toggleIsCalloutVisible }] = useBoolean(false);
@@ -220,9 +217,7 @@ export const DataSetGrid = React.memo(({
         const retrieveNotes = React.useEffect(() => {
           getRecordRelatedNotes(context, namedReference,
             targetEntityType).then(data => {
-            console.log('data entities');
-            console.log('not ok');
-            // console.log(data.entities);
+
             const finalNotes = data.entities.map((entity: any) => ({
               name: entity.filename,
               fieldName: entity.filename !== null ? entity.filename : entity.subject,
@@ -237,19 +232,16 @@ export const DataSetGrid = React.memo(({
           alert(`Item invoked: ${JSON.stringify(item)}`);
         };
 
-        const onCalloutRenderRow = useCallback((row, defaultRender) =>
+        const onCalloutRenderRow = useCallback((row, defaultRender) => // Functionality testing
           cloneElement(defaultRender(row), { onClick: () => console.log(item) }),
         [ onCalloutItemInvoked ]);
 
-        const _onActiveItemChanged = (item: any): void => {
+        const _onActiveItemChanged = (item: any): void => { // Functionality testing
           console.log(`Item invoked: ${JSON.stringify(item)}`);
         };
-        const { selection, selectedCount,
+        const { selection, selectedCount, // Functionality testing
           onItemInvoked } = useSelection(dataset);
 
-        // console.log('Selection');
-        // console.log(selection);
-        
         return <>
           <IconButton
             id={deleteButtonId}
@@ -263,7 +255,7 @@ export const DataSetGrid = React.memo(({
             ariaLabel="Delete"
           />
           {isCalloutVisible ? (
-            <Callout
+            <Callout // Callout or Modal window?
 
 
               role="alertdialog"
@@ -296,17 +288,17 @@ export const DataSetGrid = React.memo(({
               <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
                 <Stack className={calloutStyles.buttons} gap={8} horizontal>
                   <PrimaryButton
-                    onClick={ev => {
+                    onClick={ () => {
                       console.log(' get selection');
-                      const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+                      // const [, forceUpdate] = React.useReducer(x => x + 1, 0);
                       const noteIds = selection.getSelection().map((item : any) => item.key);
-                      console.log('Note ITEMS BEFORE DELETE');
+                      console.log('Note items before');
                       console.log(noteItems);
                       deleteNotes(context, noteIds);
                       // { retrieveNotes; }
                       // onXButtonClick(ev);
                       // forceUpdate();
-                      console.log('Note ITEMS AFTER DELETE');
+                      console.log('Note items after delete');
                       console.log(noteItems);
                       console.log('Successfully deleted');
                     }}>Delete</PrimaryButton>
@@ -358,7 +350,7 @@ export const DataSetGrid = React.memo(({
   return (
     <>
       <div style={{ width: '100%' }}>
-        <div className={MainDivStyles}>
+        <div className={MainDivStyles}> {/* make styles structural easier */}
           <div className={CommandBarAndSearchBoxStyles}>
             <div className={SearchBoxStyles}>
               <SearchBox placeholder='Search...'
@@ -386,7 +378,7 @@ export const DataSetGrid = React.memo(({
             layoutMode={DetailsListLayoutMode.justified}
           >
           </DetailsList>
-          <GridFooter dataset={dataset} selectedCount={selectedCount}></GridFooter>
+          <GridFooter dataset={dataset} selectedCount={selectedCount}></GridFooter> {/* design needs to be improved */}
         </div>
       </div>
     </>);
