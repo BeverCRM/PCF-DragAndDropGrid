@@ -1,8 +1,7 @@
 import * as React from 'react';
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
-// import DataSetInterfaces = ComponentFramework.PropertyHelper.DataSetApi;
 
-export const usePaging = (dataset: DataSet) => {
+export const usePagination = (dataset: DataSet) => {
 
   const [firstItemNumber, setFirstItemNumber] = React.useState<number>(0);
   const [lastItemNumber, setLastItemNumber] = React.useState<number>();
@@ -11,7 +10,7 @@ export const usePaging = (dataset: DataSet) => {
   const [pageSize, setPageSize] = React.useState<number>(0);
 
   React.useEffect(() => {
-    if (!dataset.paging.hasPreviousPage) { // first page
+    if (!dataset.paging.hasPreviousPage) {
       setPageSize(dataset.sortedRecordIds.length);
       setCurrentPage(1);
       setTotalRecords(dataset.paging.totalResultCount);

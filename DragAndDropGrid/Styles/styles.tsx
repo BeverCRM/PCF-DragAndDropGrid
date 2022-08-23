@@ -1,14 +1,27 @@
-import { IIconProps } from '@fluentui/react';
-import { useId } from '@fluentui/react-hooks';
-import { FontWeights, mergeStyleSets } from '@fluentui/react/lib/Styling';
+import { IIconProps, IStackStyles } from '@fluentui/react';
+import { FontWeights, mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
 
-export const settingsIcon: IIconProps = { iconName: 'CalculatorMultiply' }; // CalculatorMultiply
-export const settingsButtonId = useId('delete-button');
+export const settingsIcon: IIconProps = { iconName: 'Settings' };
+export const deleteIcon: IIconProps = { iconName: 'Delete' };
+export const stackStyles: Partial<IStackStyles> = { root: { height: 44, marginLeft: 100 } };
+export const downloadIcon: IIconProps = { iconName: 'Download' };
+export const refreshIcon: IIconProps = { iconName: 'Refresh' };
+export const addIcon: IIconProps = { iconName: 'Add' };
+
+export const settingsButtonStyles = mergeStyles({
+
+  backgroundColor: 'transparent',
+});
 
 export const calloutStyles = mergeStyleSets({
   callout: {
     width: 320,
     padding: '20px 24px',
+  },
+  detailsListContent: {
+    width: 270,
+    maxHeight: 325,
+    fontWeight: FontWeights.regular,
   },
   title: {
     marginBottom: 12,
@@ -21,7 +34,7 @@ export const calloutStyles = mergeStyleSets({
   },
 });
 
-const footerStyles = mergeStyleSets({
+export const footerStyles = mergeStyleSets({
   content: {
     height: '32px',
     width: '100%',
@@ -59,24 +72,13 @@ export const dataSetStyles = mergeStyleSets({
     position: 'relative',
     height: '40px',
   },
-  commandBarAndSearchBox: {
+  buttons: {
     display: 'flex',
     position: 'relative',
     flexDirection: 'row',
     left: '100%',
     transform: 'translateX(-100%)',
-    maxWidth: '600px',
-  },
-  commandBar: {
-    flex: 2,
-    minWidth: '120px',
-    maxWidth: '400px',
-  },
-  searchBox: {
-    flex: 1,
-    minWidth: '100px',
-    maxWidth: '200px',
-    marginTop: '6px',
+    maxWidth: '500px',
   },
   detailsList: {
     paddingTop: '0px',

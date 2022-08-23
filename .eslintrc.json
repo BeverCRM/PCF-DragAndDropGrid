@@ -19,18 +19,6 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "class-methods-use-this": "off",
-    "lines-between-class-members": ["error", "always", {
-      "exceptAfterSingleLine": true
-    }],
-    "max-len": [
-      "error",
-      {
-        "code": 100,
-        "ignoreUrls": true,
-        "ignoreComments": true
-      }
-    ],
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"]
   },
