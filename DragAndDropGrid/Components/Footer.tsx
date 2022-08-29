@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { usePagination } from './Pagination';
-import { footerStyles } from '../Styles/styles';
+import { footerStyles } from '../Styles/FooterStyles';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 

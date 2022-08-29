@@ -1,5 +1,5 @@
 import { IInputs, IOutputs } from './generated/ManifestTypes';
-import { DataSetGrid, IDataSetProps } from './Components/Dataset';
+import DataSetGrid, { IDataSetProps } from './Components/Dataset';
 import * as React from 'react';
 import DataverseService from './Services/DataverseService';
 
@@ -15,14 +15,13 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
     public init(
       context: ComponentFramework.Context<IInputs>,
       notifyOutputChanged: () => void,
-      state: ComponentFramework.Dictionary
+      // state: ComponentFramework.Dictionary
     ): void {
       this.notifyOutputChanged = notifyOutputChanged;
     }
 
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
       DataverseService.setContext(context);
-
       const props: IDataSetProps = {
         dataset: context.parameters.dataset,
       };

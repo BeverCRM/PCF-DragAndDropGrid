@@ -1,31 +1,21 @@
-export function readFileAsync(file: any) {
+export function readFileAsync(file: Blob): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      resolve(reader.result);
+      resolve(reader.result as ArrayBuffer);
     };
     reader.onerror = reject;
+
     reader.readAsArrayBuffer(file);
   });
 }
 
-export function getEntityPluralName(entityName: string) : string {
-  let plural = '';
-  if (entityName !== null) {
-
-    const lastChar = entityName.length > 0 ? entityName.slice(-1) : '';
-    const lastTwoChars = entityName.length > 1 ? entityName.slice(-2) : '';
-
-    if (lastChar === 's' || lastChar === 'x' || lastChar === 'z' ||
-    lastTwoChars === 'ch' || lastTwoChars === 'sh') {
-      plural = `${entityName}es`;
-    }
-    else if (lastChar === 'y') {
-      plural = `${entityName.slice(0, entityName.length - 1)}ies`;
-    }
-    else {
-      plural = `${entityName}s`;
-    }
+export function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
   }
-  return plural;
+  return window.btoa(binary);
 }

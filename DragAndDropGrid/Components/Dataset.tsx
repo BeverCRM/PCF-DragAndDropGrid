@@ -3,18 +3,21 @@ import { Callout, CommandBarButton, DefaultButton, DetailsList,
   DetailsListLayoutMode, FocusZone,
   FocusZoneTabbableElements, IconButton,
   IContextualMenuProps,
-  IDragDropEvents, PrimaryButton, Stack } from '@fluentui/react';
+  IDragDropEvents, PrimaryButton,
+  Spinner, SpinnerSize, Stack } from '@fluentui/react';
 import { GridFooter } from './Footer';
 import { useSelection } from './Selection';
 import { useBoolean } from '@fluentui/react-hooks';
-import { addIcon, calloutStyles, dataSetStyles, deleteIcon,
-  downloadIcon, refreshIcon, settingsButtonStyles,
-  settingsIcon, stackStyles } from '../Styles/styles';
+
 import DataverseService from '../Services/DataverseService';
 import * as JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { settingsButtonStyles, settingsIcon, calloutStyles } from '../Styles/CalloutStyles';
+import { dataSetStyles, stackStyles, addIcon,
+  downloadIcon, refreshIcon, deleteIcon } from '../Styles/DataSetStyles';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
+type Entity = ComponentFramework.WebApi.Entity;
 
 export interface IDataSetProps {
   dataset: DataSet;
@@ -25,14 +28,15 @@ function getDragDropEvents(): IDragDropEvents {
     canDrop: () => true,
     onDrop: (item?: any, event?: DragEvent) => {
       event?.preventDefault();
-      const files = event?.dataTransfer?.files;
-      DataverseService.uploadFiles(files, item);
+      const droppedFiles = event?.dataTransfer?.files;
+      const targetEntityId = item.key;
+      DataverseService.uploadFiles(droppedFiles, targetEntityId);
     },
   };
 }
 
-function downloadSelectedNotes(selectedRecords: any) {
-  const zip = new JSZip();
+function downloadSelectedNotes(selectedRecords: any[]) {
+  const zip: JSZip = new JSZip();
   selectedRecords.forEach((file: any) => {
     zip.file(file.name, file.documentbody, { base64: true });
   });
@@ -47,11 +51,11 @@ export function refreshGrid(dataset: DataSet) {
   return dataset.refresh();
 }
 
-const DataSetGrid = ({ dataset }: IDataSetProps) : JSX.Element => {
+const DataSetGrid = ({ dataset }: IDataSetProps) => {
   const [items, setItems] = React.useState<any>([]);
   const [columns, setColumns] = React.useState<any>([]);
   const dragDropEvents = getDragDropEvents();
-  const { selection, selectedCount, selectedItems, onItemInvoked } = useSelection(dataset);
+  const { selection, selectedCount, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
   const menuProps: IContextualMenuProps = {
     items: [
@@ -75,15 +79,17 @@ const DataSetGrid = ({ dataset }: IDataSetProps) : JSX.Element => {
       onRender: (item: any) => {
         const [noteItems, setNoteItems] = React.useState<any>([]);
         const [isCalloutVisible, { toggle: toggleIsCalloutVisible }] = useBoolean(false);
+        const [isLoading, setIsLoading] = React.useState<boolean>(true);
+        const [noteDeleted, { toggle: toggleNoteDeleted }] = useBoolean(false);
         const { selection, selectedItems, selectedRecordIds } = useSelection(dataset);
-        const namedReference = dataset.records[item.key].getNamedReference();
-        const uniqueButtonId = item.key;
+        const targetEntityId = item.key;
 
         React.useEffect(() => {
           if (isCalloutVisible) {
-            DataverseService.getRecordRelatedNotes(namedReference).then(data => {
-              const finalNotes = data.entities.filter((entity: any) =>
-                entity.filename !== undefined).map((entity: any) =>
+            setIsLoading(true);
+            DataverseService.getRecordRelatedNotes(targetEntityId).then(data => {
+              const finalNotes = data.entities.filter((entity: Entity) =>
+                entity.filename !== undefined).map((entity: Entity) =>
                 ({
                   name: entity.filename,
                   fieldName: entity.filename,
@@ -95,13 +101,14 @@ const DataSetGrid = ({ dataset }: IDataSetProps) : JSX.Element => {
               if (finalNotes.length !== 0) {
                 setNoteItems(finalNotes);
               }
+              setIsLoading(false);
             });
           }
-        }, [isCalloutVisible]);
+        }, [isCalloutVisible, noteDeleted]);
 
         return <>
           <IconButton
-            id={uniqueButtonId}
+            id={targetEntityId}
             className={settingsButtonStyles}
             onClick={() => {
               toggleIsCalloutVisible();
@@ -110,43 +117,64 @@ const DataSetGrid = ({ dataset }: IDataSetProps) : JSX.Element => {
             title="Settings"
             ariaLabel="Settings"
           />
-          {isCalloutVisible
-            ? <Callout
-              setInitialFocus={true}
-              role="alertdialog"
-              className={calloutStyles.callout}
-              gapSpace={0}
-              onClick={() => { }}
-              target={`[id='${uniqueButtonId}']`}
-              onDismiss={toggleIsCalloutVisible}
-            >
-              <div className={calloutStyles.title}>
-                Related Notes
-              </div>
-              {noteItems.length !== 0 ? <div><DetailsList
-                onItemInvoked = {DataverseService.onCalloutItemInvoked}
-                className={calloutStyles.detailsListContent}
-                items={noteItems}
-                selection={selection}
-              >
-              </DetailsList>
-              <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
-                <Stack className={calloutStyles.buttons} gap={8} horizontal>
-                  <PrimaryButton
-                    onClick={() => { downloadSelectedNotes(selectedItems); }}
-                  >Download</PrimaryButton>
-                  <PrimaryButton
-                    onClick={ () => {
-                      DataverseService.deleteSelectedNotes(selectedRecordIds);
-                    }}>Delete</PrimaryButton>
-                  <DefaultButton onClick={toggleIsCalloutVisible}>Cancel</DefaultButton>
-                </Stack>
-              </FocusZone>
-              </div> : <div className={calloutStyles.detailsListContent}>
+          {
+            (() => {
+              if (isCalloutVisible) {
+                return <Callout
+                  setInitialFocus={true}
+                  role="alertdialog"
+                  className={calloutStyles.callout}
+                  gapSpace={0}
+                  onClick={() => { }}
+                  target={`[id='${targetEntityId}']`}
+                  onDismiss={toggleIsCalloutVisible}
+                >
+                  <div className={calloutStyles.title}>
+                        Related Notes
+                  </div>
+                  {
+                    (() => {
+                      if (!isLoading) {
+                        if (noteItems.length !== 0) {
+                          return <div><DetailsList
+                            onItemInvoked = {DataverseService.onCalloutItemInvoked}
+                            className={calloutStyles.detailsListContent}
+                            items={noteItems}
+                            selection={selection}
+                          >
+                          </DetailsList>
+                          <FocusZone handleTabKey={FocusZoneTabbableElements.all}
+                            isCircularNavigation>
+                            <Stack className={calloutStyles.buttons} gap={8} horizontal>
+                              <PrimaryButton
+                                onClick={() => { downloadSelectedNotes(selectedItems); }}
+                              >Download</PrimaryButton>
+                              <PrimaryButton
+                                onClick={ () => {
+                                  setIsLoading(true);
+                                  DataverseService.deleteSelectedNotes(selectedRecordIds)
+                                    .then(() => {
+                                      setIsLoading(false);
+                                      toggleNoteDeleted();
+                                    });
+
+                                }}>Delete</PrimaryButton>
+                              <DefaultButton onClick={toggleIsCalloutVisible}>Cancel</DefaultButton>
+                            </Stack>
+                          </FocusZone>
+                          </div>;
+                        }
+                        return <div className={calloutStyles.detailsListContent}>
                         No related Notes. Drag and Drop
-                        file(s) on a row to create Notes. </div> }
-            </Callout>
-            : null}
+                        file(s) on a row to create Notes. </div>;
+                      }
+                      return <Spinner className={calloutStyles.spinner} size={SpinnerSize.large} />;
+                    })()
+                  }
+                </Callout>;
+              }
+            })()
+          }
         </>;
       },
     },
@@ -204,7 +232,7 @@ const DataSetGrid = ({ dataset }: IDataSetProps) : JSX.Element => {
               <CommandBarButton
                 iconProps={deleteIcon}
                 text="Delete"
-                onClick={() => { DataverseService.deleteSelectedRecords(selectedItems); }}
+                onClick={() => { DataverseService.deleteSelectedRecords(selectedRecordIds); }}
               />
             </Stack>
           </div>
