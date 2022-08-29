@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Callout, CommandBarButton, DefaultButton, DetailsList,
   DetailsListLayoutMode, FocusZone,
-  FocusZoneTabbableElements, IconButton,
-  IContextualMenuProps,
+  FocusZoneTabbableElements, IColumn, IconButton,
   IDragDropEvents, PrimaryButton,
   Spinner, SpinnerSize, Stack } from '@fluentui/react';
 import { GridFooter } from './Footer';
@@ -47,28 +46,17 @@ function downloadSelectedNotes(selectedRecords: any[]) {
     });
 }
 
-export function refreshGrid(dataset: DataSet) {
+function refreshGrid(dataset: DataSet) {
   return dataset.refresh();
 }
 
-const DataSetGrid = ({ dataset }: IDataSetProps) => {
+export const DataSetGrid = React.memo(({ dataset }: IDataSetProps) => {
   const [items, setItems] = React.useState<any>([]);
   const [columns, setColumns] = React.useState<any>([]);
   const dragDropEvents = getDragDropEvents();
   const { selection, selectedCount, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
-  const menuProps: IContextualMenuProps = {
-    items: [
-      {
-        key: 'inventoryProduct',
-        text: 'Inventory Product',
-        iconProps: { iconName: 'Product' },
-        onClick: () => { DataverseService.openRecordCreateForm(); },
-      },
-    ],
-  };
-
-  const notesColumn = [
+  const notesColumn: IColumn[] = [
     {
       name: '',
       fieldName: 'Delete',
@@ -130,7 +118,7 @@ const DataSetGrid = ({ dataset }: IDataSetProps) => {
                   onDismiss={toggleIsCalloutVisible}
                 >
                   <div className={calloutStyles.title}>
-                        Related Notes
+                      Attachments
                   </div>
                   {
                     (() => {
@@ -216,8 +204,8 @@ const DataSetGrid = ({ dataset }: IDataSetProps) => {
 
               <CommandBarButton
                 iconProps={addIcon}
-                text="New"
-                menuProps={menuProps}
+                text="New Inventory Product" // get entityName
+                onClick={() => { DataverseService.openRecordCreateForm(); }}
               />
               <CommandBarButton
                 iconProps={downloadIcon}
@@ -244,13 +232,14 @@ const DataSetGrid = ({ dataset }: IDataSetProps) => {
             dragDropEvents = {dragDropEvents}
             onItemInvoked = {onItemInvoked}
             selection={selection}
-            layoutMode={DetailsListLayoutMode.justified}
+            enableUpdateAnimations= {true} // how works
+            // layoutMode={DetailsListLayoutMode.justified}
           >
           </DetailsList>
           <GridFooter dataset={dataset} selectedCount={selectedCount}></GridFooter>
         </div>
       </div>
     </>);
-};
+});
 
-export default React.memo(DataSetGrid);
+DataSetGrid.displayName = 'DataSetGrid';

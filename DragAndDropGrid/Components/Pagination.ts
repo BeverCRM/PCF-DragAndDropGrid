@@ -21,20 +21,19 @@ export const usePagination = (dataset: DataSet) => {
 
   function moveToFirst() {
     setCurrentPage(1);
-    (dataset.paging as any).loadExactPage(1);
+    dataset.paging.loadExactPage(1);
   }
 
   function movePrevious() {
     const newPage = currentPage - 1;
     setCurrentPage(newPage);
-    (dataset.paging as any).loadExactPage(newPage);
-
+    dataset.paging.loadExactPage(newPage);
   }
 
   function moveNext() {
     const newPage = currentPage + 1;
     setCurrentPage(newPage);
-    (dataset.paging as any).loadExactPage(newPage);
+    dataset.paging.loadExactPage(newPage);
   }
 
   return {

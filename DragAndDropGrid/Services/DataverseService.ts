@@ -43,12 +43,11 @@ export default {
     if (files !== undefined) {
       for (let i = 0; i < files.length; i++) {
         const file: File = files[i];
-        const newFile = new File([file], file.name, { type: file.type });
         const buffer: ArrayBuffer = await readFileAsync(file);
         const body: string = arrayBufferToBase64(buffer);
 
         const note: any = {
-          filename: newFile.name,
+          filename: file.name,
           subject: '',
           documentbody: body,
           mimetype: file.type,

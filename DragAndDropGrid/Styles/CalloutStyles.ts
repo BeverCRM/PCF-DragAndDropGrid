@@ -1,7 +1,7 @@
 import { IIconProps } from '@fluentui/react/lib/components/Icon/Icon.types';
 import { FontWeights, mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
 
-export const settingsIcon: IIconProps = { iconName: 'Settings' };
+export const settingsIcon: IIconProps = { iconName: 'EditNote' };
 export const settingsButtonStyles = mergeStyles({
 
   backgroundColor: 'transparent',

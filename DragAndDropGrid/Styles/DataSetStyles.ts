@@ -21,7 +21,7 @@ export const dataSetStyles = mergeStyleSets({
     flexDirection: 'row',
     left: '100%',
     transform: 'translateX(-100%)',
-    maxWidth: '500px',
+    maxWidth: '600px',
   },
   detailsList: {
     paddingTop: '0px',
