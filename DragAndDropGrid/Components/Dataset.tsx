@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Callout, CommandBarButton, DefaultButton, DetailsList,
-  DetailsListLayoutMode, FocusZone,
+  FocusZone,
   FocusZoneTabbableElements, IColumn, IconButton,
   IDragDropEvents, PrimaryButton,
   Spinner, SpinnerSize, Stack } from '@fluentui/react';
