@@ -8,6 +8,8 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
 
     private notifyOutputChanged: () => void;
 
+    context: ComponentFramework.Context<IInputs>;
+
     constructor() { }
 
     public init(
@@ -15,10 +17,15 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
       notifyOutputChanged: () => void,
     ): void {
       this.notifyOutputChanged = notifyOutputChanged;
+      this.context = context;
+      this.context.mode.trackContainerResize(true);
     }
 
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-      DataverseService.setContext(context);
+      const targetEntityType: string = context.parameters.dataset.getTargetEntityType();
+
+      DataverseService.setContext(context, targetEntityType);
+
       const props: IDataSetProps = {
         dataset: context.parameters.dataset,
       };
