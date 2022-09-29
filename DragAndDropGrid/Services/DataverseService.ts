@@ -1,15 +1,13 @@
 import { arrayBufferToBase64, readFileAsync } from '../Utils/Utils';
 import { IInputs } from '../generated/ManifestTypes';
-import JSZip = require('jszip');
-import saveAs = require('file-saver');
 
-export let _context: ComponentFramework.Context<IInputs>;
-export let _targetEntityType: string;
+let _context: ComponentFramework.Context<IInputs>;
+let _targetEntityType: string;
 
 export default {
-  setContext(context: ComponentFramework.Context<IInputs>, targetEntityType: string) {
+  setContext(context: ComponentFramework.Context<IInputs>) {
     _context = context;
-    _targetEntityType = targetEntityType;
+    _targetEntityType = _context.parameters.dataset.getTargetEntityType();
   },
 
   async getRecordRelatedNotes(targetEntityId: string) {
@@ -35,13 +33,12 @@ export default {
     fetchXml = `?fetchXml=${encodeURIComponent(fetchXml)}`;
     const recordRelatedNotes = await _context.webAPI.retrieveMultipleRecords('annotation',
       fetchXml);
-
     return recordRelatedNotes;
   },
+
   async getTargetEntityDisplayName() {
     const entityMetadata = await _context.utils.getEntityMetadata(_targetEntityType);
-    const targetEntityDisplayName = entityMetadata._displayName;
-    return targetEntityDisplayName;
+    return entityMetadata._displayName;
   },
 
   async uploadFiles(files: FileList | undefined, targetEntityId: string): Promise<void> {
@@ -77,22 +74,10 @@ export default {
     }
   },
 
-  downloadSelectedNotes(selectedRecords: any[]) {
-    const zip: JSZip = new JSZip();
-    selectedRecords.forEach((file: any) => {
-      zip.file(file.name, file.documentbody, { base64: true });
-    });
-    zip.generateAsync({ type: 'blob' })
-      .then(content => {
-        saveAs(content, 'Files.zip');
-      });
-  },
-
   deleteSelectedRecords(recordIds: string[]): void {
-    const targetEntityType: string = _context.parameters.dataset.getTargetEntityType();
     try {
       for (const id of recordIds) {
-        _context.webAPI.deleteRecord(targetEntityType, id);
+        _context.webAPI.deleteRecord(_targetEntityType, id);
       }
     }
     catch (e) {

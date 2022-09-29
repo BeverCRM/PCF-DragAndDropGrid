@@ -2,10 +2,10 @@ import { DefaultButton, DetailsList, IconButton, Modal,
   PrimaryButton, Spinner, SpinnerSize, Stack } from '@fluentui/react';
 import * as React from 'react';
 import DataverseService from '../Services/DataverseService';
+import { downloadSelectedNotes } from '../Services/ZipService';
 import { modalStyles, cancelIcon,
   iconButtonStyles, notesButtonStyles, notesIcon, modalLayerProps } from '../Styles/ModalStyles';
 import { useSelection } from './Selection';
-import { useBoolean } from '@fluentui/react-hooks';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 type Entity = ComponentFramework.WebApi.Entity;
@@ -21,10 +21,11 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
     selectedItems,
     selectedRecordIds,
   } = useSelection(dataset);
+
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [isModalOpen, { setTrue: showModal, setFalse: hideModal }] = useBoolean(false);
+  const [isModalOpen, setIsModalOpen ] = React.useState<boolean>(false);
   const [noteItems, setNoteItems] = React.useState<any>([]);
-  const [noteDeleted, { toggle: toggleNoteDeleted }] = useBoolean(false);
+  const [noteDeleted, setNoteDeleted] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (isModalOpen) {
@@ -51,7 +52,7 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
     id={targetEntityId}
     className={notesButtonStyles}
     onClick={() => {
-      showModal();
+      setIsModalOpen(true);
     }}
     iconProps={notesIcon}
     title="Attachments"
@@ -59,7 +60,9 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
   />
   <Modal
     isOpen={isModalOpen}
-    onDismiss={hideModal}
+    onDismiss={() => {
+      setIsModalOpen(true);
+    }}
     isBlocking={true}
     layerProps={modalLayerProps}
     containerClassName={modalStyles.container}
@@ -69,7 +72,11 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
       <IconButton
         styles={iconButtonStyles}
         iconProps={cancelIcon}
-        onClick={hideModal}
+        onClick={
+          () => {
+            setIsModalOpen(false);
+          }
+        }
       />
     </div>
     {
@@ -84,17 +91,19 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
             </DetailsList>
             <Stack className={modalStyles.buttons} gap={8} horizontal>
               <PrimaryButton
-                onClick={() => { DataverseService.downloadSelectedNotes(selectedItems); }}
+                onClick={() => { downloadSelectedNotes(selectedItems); }}
               >Download</PrimaryButton>
               <PrimaryButton
                 onClick={ () => {
                   DataverseService.openNoteDeleteDialog(selectedRecordIds).then(
                     () => {
-                      toggleNoteDeleted();
+                      setNoteDeleted(!noteDeleted);
                     },
                   );
                 }}>Delete</PrimaryButton>
-              <DefaultButton onClick={hideModal}>Cancel</DefaultButton>
+              <DefaultButton onClick={() => {
+                setIsModalOpen(false);
+              }}>Cancel</DefaultButton>
             </Stack>
             </div>;
           }

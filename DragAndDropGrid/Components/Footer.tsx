@@ -22,8 +22,7 @@ export const GridFooter = ({ dataset, selectedCount } : IGridFooterProps) => {
     moveNext,
   } = usePagination(dataset);
 
-  const { hasPreviousPage } = dataset.paging;
-  const { hasNextPage } = dataset.paging;
+  const { hasPreviousPage, hasNextPage } = dataset.paging;
 
   const selected = `${firstItemNumber} - ${lastItemNumber}
   of ${totalRecords} ${selectedCount !== 0 ? `(${selectedCount} Selected)` : ''}`;
