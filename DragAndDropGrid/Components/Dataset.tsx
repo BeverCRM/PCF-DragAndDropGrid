@@ -42,7 +42,7 @@ export const DataSetGrid = React.memo(({ dataset }: IDataSetProps) => {
 
   const refreshGrid = (dataset: DataSet) => {
     setIsLoading(true);
-    return dataset.refresh();
+    dataset.refresh();
   };
 
   React.useEffect(() => {

@@ -5,7 +5,7 @@ import { addIcon, CommandBarButtonStyles, downloadIcon,
   refreshIcon, deleteIcon } from '../Styles/DataSetStyles';
 
 export interface ICommandBarProps {
-  refreshGrid: any;
+  refreshGrid: (dataset: Dataset) => void;
   selectedRecordIds: string[];
 }
 
