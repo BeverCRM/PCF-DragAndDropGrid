@@ -5,7 +5,6 @@ import DataverseService from './Services/DataverseService';
 
 export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
-
     private notifyOutputChanged: () => void;
 
     constructor() { }
@@ -19,6 +18,7 @@ export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs,
 
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
       DataverseService.setContext(context);
+
       const props: IDataSetProps = {
         dataset: context.parameters.dataset,
       };

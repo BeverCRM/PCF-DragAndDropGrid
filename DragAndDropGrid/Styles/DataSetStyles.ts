@@ -1,3 +1,6 @@
+import { IButtonStyles } from '@fluentui/react/lib/components/Button/Button.types';
+import { IDetailsColumnStyles } from
+  '@fluentui/react/lib/components/DetailsList/DetailsColumn.types';
 import { IIconProps } from '@fluentui/react/lib/components/Icon/Icon.types';
 import { IStackStyles } from '@fluentui/react/lib/components/Stack/Stack.types';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
@@ -16,14 +19,34 @@ export const dataSetStyles = mergeStyleSets({
     height: '40px',
   },
   buttons: {
-    display: 'flex',
-    position: 'relative',
-    flexDirection: 'row',
-    left: '100%',
-    transform: 'translateX(-100%)',
-    maxWidth: '600px',
+    height: '44px',
+    paddingRight: '20px',
   },
   detailsList: {
     paddingTop: '0px',
   },
+  commandBarButton: {
+    root: {
+      color: 'black',
+    },
+    icon: {
+      color: 'black',
+    },
+  },
+
 });
+
+export const CommandBarButtonStyles: Partial<IButtonStyles> = {
+  root: {
+    color: 'black',
+  },
+  icon: {
+    color: 'black',
+  },
+};
+
+export const detailsHeaderStyles: Partial<IDetailsColumnStyles> = {
+  cellName: {
+    fontSize: '12px',
+  },
+};

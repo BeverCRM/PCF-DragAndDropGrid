@@ -1,32 +1,38 @@
+import { IButtonStyles } from '@fluentui/react/lib/components/Button/Button.types';
+import { IIconProps } from '@fluentui/react/lib/components/Icon/Icon.types';
 import { mergeStyleSets } from '@fluentui/react/lib/Styling';
+
+export const PreviousIcon: IIconProps = { iconName: 'Previous' };
+export const BackIcon: IIconProps = { iconName: 'Back' };
+export const ForwardIcon: IIconProps = { iconName: 'Forward' };
 
 export const footerStyles = mergeStyleSets({
   content: {
-    height: '32px',
-    width: '100%',
-    paddingTop: '10px',
-    color: '#333',
-    fontSize: '14px',
-    borderTop: '1px solid #edebe9',
-  },
-  footer: {
     display: 'flex',
-    fontFamily: 'Segoe UI',
-  },
-  icon: {
-    backgroundColor: 'transparent',
-    fontSize: '14px',
-    cursor: 'pointer',
-    height: '0px',
-  },
-  left: {
-    width: '100%',
-    textAlign: 'left',
-    marginLeft: '10px',
-  },
-  right: {
-    width: '100%',
-    textAlign: 'right',
-    marginRight: '10px',
+    flex: '1 1 auto',
+    flexDirection: 'row',
+    placeContent: 'stretch space-between',
+    height: '40px',
+    color: '#333',
+    fontSize: '12px',
+    alignItems: 'center',
+    paddingLeft: '20px',
+    paddingRight: '20px',
   },
 });
+
+export const footerButtonStyles: Partial<IButtonStyles> = {
+  root: {
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    height: '0px',
+    color: 'green',
+  },
+  icon: {
+    fontSize: '12px',
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    height: '0px',
+    color: 'rgb(0 120 212)',
+  },
+};

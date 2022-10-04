@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { usePagination } from './Pagination';
-import { footerStyles } from '../Styles/FooterStyles';
+import { BackIcon, footerButtonStyles, footerStyles,
+  ForwardIcon, PreviousIcon } from '../Styles/FooterStyles';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
@@ -21,23 +22,24 @@ export const GridFooter = ({ dataset, selectedCount } : IGridFooterProps) => {
     moveNext,
   } = usePagination(dataset);
 
+  const { hasPreviousPage, hasNextPage } = dataset.paging;
+
   const selected = `${firstItemNumber} - ${lastItemNumber}
-  of ${totalRecords} (${selectedCount} selected)`;
+  of ${totalRecords} ${selectedCount !== 0 ? `(${selectedCount} Selected)` : ''}`;
+
   const page = `Page ${currentPage}`;
 
   return <div>
     <div className={footerStyles.content}>
-      <div className={footerStyles.footer}>
-        <div className={footerStyles.left}> {selected} </div>
-        <div className={footerStyles.right}>
-          <IconButton className={footerStyles.icon} iconProps={{ iconName: 'Previous' }}
-            onClick={moveToFirst} disabled={!dataset.paging.hasPreviousPage}/>
-          <IconButton className={footerStyles.icon} iconProps={{ iconName: 'Back' }}
-            onClick={movePrevious} disabled={!dataset.paging.hasPreviousPage}/>
-          <span> {page} </span>
-          <IconButton className={footerStyles.icon} iconProps={{ iconName: 'Forward' }}
-            onClick={moveNext} disabled={!dataset.paging.hasNextPage}/>
-        </div>
+      <span > {selected} </span>
+      <div>
+        <IconButton styles = {footerButtonStyles} iconProps={PreviousIcon}
+          onClick={moveToFirst} disabled={!hasPreviousPage}/>
+        <IconButton styles = {footerButtonStyles} iconProps={BackIcon}
+          onClick={movePrevious} disabled={!hasPreviousPage}/>
+        <span> {page} </span>
+        <IconButton styles = {footerButtonStyles} iconProps={ForwardIcon}
+          onClick={moveNext} disabled={!hasNextPage}/>
       </div>
     </div>
   </div>;
