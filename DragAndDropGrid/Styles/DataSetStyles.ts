@@ -3,7 +3,7 @@ import { IDetailsColumnStyles } from
   '@fluentui/react/lib/components/DetailsList/DetailsColumn.types';
 import { IIconProps } from '@fluentui/react/lib/components/Icon/Icon.types';
 import { IStackStyles } from '@fluentui/react/lib/components/Stack/Stack.types';
-import { mergeStyleSets } from '@fluentui/react/lib/Styling';
+import { mergeStyleSets, mergeStyles } from '@fluentui/react/lib/Styling';
 
 export const stackStyles: Partial<IStackStyles> = { root: { height: 44, marginLeft: 100 } };
 export const deleteIcon: IIconProps = { iconName: 'Delete' };
@@ -34,6 +34,18 @@ export const dataSetStyles = mergeStyleSets({
     },
   },
 
+});
+
+export const dragEnterClass = mergeStyles({
+  'padding-top': '8px !important',
+  'padding-bottom': '53px !important',
+  'border': 'solid 2px rgba(93, 104, 105, 0.62) !important',
+  'transition': 'background-color 300ms !important',
+  '-webkit-transition': 'background-color 300ms !important',
+  '-moz-transition': 'background-color 300ms !important',
+  '-o-transition': 'background-color 300ms !important',
+  'font-size': '21px !important',
+  'background-color': '#6666664a !important',
 });
 
 export const CommandBarButtonStyles: Partial<IButtonStyles> = {

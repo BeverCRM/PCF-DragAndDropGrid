@@ -4,6 +4,14 @@ import { IInputs } from '../generated/ManifestTypes';
 let _context: ComponentFramework.Context<IInputs>;
 let _targetEntityType: string;
 
+const notificationOptions = {
+  errorsCount: 0,
+  importedSucsessCount: 0,
+  filesCount: 0,
+  details: '',
+  message: '',
+};
+
 export default {
   setContext(context: ComponentFramework.Context<IInputs>) {
     _context = context;
@@ -41,25 +49,59 @@ export default {
     return entityMetadata._displayName;
   },
 
-  async uploadFiles(files: FileList | undefined, targetEntityId: string): Promise<void> {
-    const entityMetadata = await _context.utils.getEntityMetadata(_targetEntityType);
-    if (files !== undefined) {
-      for (let i = 0; i < files.length; i++) {
-        const file: File = files[i];
-        const buffer: ArrayBuffer = await readFileAsync(file);
-        const body: string = arrayBufferToBase64(buffer);
+  async getEntitySetName(entityTypeName: string) {
+    const entityMetadata = await _context.utils.getEntityMetadata(entityTypeName);
+    return entityMetadata.EntitySetName;
+  },
 
-        const note: any = {
-          filename: file.name,
-          subject: '',
-          documentbody: body,
-          mimetype: file.type,
-        };
+  async uploadFile(file: File, filesCount:number, targetEntityId: any): Promise<void> {
+    try {
+      notificationOptions.filesCount = filesCount;
+      const buffer: ArrayBuffer = await readFileAsync(file);
+      const body: string = arrayBufferToBase64(buffer);
 
-        note[`objectid_${_targetEntityType}@odata.bind`] =
-        `/${entityMetadata._entitySetName}(${targetEntityId})`;
-        _context.webAPI.createRecord('annotation', note);
-      }
+      const data: any = {
+        filename: file.name,
+        subject: '',
+        documentbody: body,
+        mimetype: file.type,
+      };
+
+      const entityMetadata = await _context.utils.getEntityMetadata(_targetEntityType);
+      data[`objectid_${_targetEntityType}@odata.bind`] =
+      `/${entityMetadata._entitySetName}(${targetEntityId})`;
+
+      await _context.webAPI.createRecord('annotation', data);
+      notificationOptions.importedSucsessCount += 1;
+    }
+    catch (ex: any) {
+      console.error(ex.message);
+      notificationOptions.details += `File Name ${file.name} Error message ${ex.message}`;
+      notificationOptions.errorsCount += 1;
+    }
+  },
+
+  showNotificationPopup() {
+    if (notificationOptions.errorsCount === 0) {
+      const message = notificationOptions.importedSucsessCount > 1
+        ? `${notificationOptions.importedSucsessCount} 
+        of ${notificationOptions.filesCount} files imported successfully`
+        : `${notificationOptions.importedSucsessCount} 
+        of ${notificationOptions.filesCount} file imported successfully`;
+
+      _context.navigation.openAlertDialog({ text: message });
+      notificationOptions.importedSucsessCount = 0;
+    }
+    else {
+      notificationOptions.message = notificationOptions.errorsCount > 1
+        ? `${notificationOptions.errorsCount} 
+        of ${notificationOptions.filesCount} files errored during import`
+        : `${notificationOptions.errorsCount} 
+        of ${notificationOptions.filesCount} file errored during import`;
+
+      _context.navigation.openErrorDialog(notificationOptions);
+      notificationOptions.errorsCount = 0, notificationOptions.importedSucsessCount = 0;
+      notificationOptions.details = '';
     }
   },
 
