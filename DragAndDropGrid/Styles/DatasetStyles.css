@@ -1,11 +1,11 @@
-.container {
+.draganddropgrid {
   width: 100%;
   position: relative;
   color:black;
   text-align: center;
 }
 
-.loading-overlay {
+.dragloading {
   position: absolute;
   top: 0px;
   right: 0px;

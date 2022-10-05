@@ -6,9 +6,7 @@ import { addIcon, CommandBarButtonStyles, downloadIcon,
 
 export interface ICommandBarProps {
   isDisabled: boolean;
-  // @ts-ignore
-  // eslint-disable-next-line no-unused-vars, no-undef
-  refreshGrid: (dataset: Dataset) => void;
+  refreshGrid: () => void;
   selectedRecordIds: string[];
 }
 

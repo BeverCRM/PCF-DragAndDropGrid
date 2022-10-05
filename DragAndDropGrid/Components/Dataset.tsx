@@ -23,9 +23,9 @@ export interface IDataSetProps {
 
 export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps) => {
 
-  const [isImporting, setIsimporting] = React.useState<boolean>(false);
+  const [isImporting, setIsImporting] = React.useState<boolean>(false);
   const [importedFilesCount, setImportedFilesCount] = React.useState<number>(0);
-  const [filesCount, setFilescount] = React.useState<number>(0);
+  const [filesCount, setFilesCount] = React.useState<number>(0);
 
   function getDragDropEvents(): IDragDropEvents {
     return {
@@ -35,16 +35,16 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
         const files = event?.dataTransfer?.files;
         if (files) {
           const targetEntityId = item.key;
-          setIsimporting(true);
-          setFilescount(files.length);
+          setIsImporting(true);
+          setFilesCount(files.length);
           for (let i = 0; i < files.length; i++) {
             setImportedFilesCount(i);
             await DataverseService.uploadFile(files[i], files.length, targetEntityId);
           }
         }
         DataverseService.showNotificationPopup();
-        setIsimporting(false);
-        setFilescount(0);
+        setIsImporting(false);
+        setFilesCount(0);
         setImportedFilesCount(0);
       },
       onDragEnter: () => dragEnterClass,
@@ -56,7 +56,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   const dragDropEvents = getDragDropEvents();
   const { selection, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
-  const refreshGrid = (dataset: DataSet) => {
+  const refreshGrid = () => {
     setIsLoading(true);
     dataset.refresh();
   };
@@ -158,8 +158,8 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   };
 
   return (
-    <div className='container'>
-      {isImporting && <div className='loading-overlay'>
+    <div className='draganddropgrid'>
+      {isImporting && <div className='dragloading'>
         <Spinner size={ SpinnerSize.large }/>
         <div>{`Imported ${importedFilesCount} of ${filesCount}`}</div>
       </div>}
@@ -173,14 +173,14 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
         </Stack>
         <Stack style={rootContainerStyle}>
           <DetailsList
-            items = {items}
-            columns = {columns}
-            dragDropEvents = {dragDropEvents}
-            onItemInvoked = {onItemInvoked}
+            items={items}
+            columns={columns}
+            dragDropEvents={dragDropEvents}
+            onItemInvoked={onItemInvoked}
             selection={selection}
             onRenderRow={_onRenderRow}
             onRenderDetailsHeader={_onRenderDetailsHeader}
-            onRenderDetailsFooter= {_onRenderDetailsFooter}
+            onRenderDetailsFooter={_onRenderDetailsFooter}
           >
           </DetailsList>
         </Stack>
