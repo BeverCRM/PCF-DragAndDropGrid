@@ -4,8 +4,8 @@ import { DetailsList, IDetailsFooterProps, IDetailsListProps, IDragDropEvents,
 import { GridFooter } from './Footer';
 import { useSelection } from './Selection';
 import DataverseService from '../Services/DataverseService';
-import { modalStyles, noteColumnStyles } from '../Styles/ModalStyles';
-import { dataSetStyles, detailsHeaderStyles } from '../Styles/DataSetStyles';
+import { noteColumnStyles } from '../Styles/ModalStyles';
+import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../Styles/DataSetStyles';
 import { NotesDetailsList } from './NotesDetailsList';
 import { CommandBar } from './CommandBar';
 
@@ -21,26 +21,42 @@ export interface IDataSetProps {
   height?: number;
 }
 
-function getDragDropEvents(): IDragDropEvents {
-  return {
-    canDrop: () => true,
-    onDrop: (item?: any, event?: DragEvent) => {
-      event?.preventDefault();
-      const droppedFiles = event?.dataTransfer?.files;
-      const targetEntityId = item.key;
-      DataverseService.uploadFiles(droppedFiles, targetEntityId);
-    },
-  };
-}
+export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps) => {
 
-export const DataSetGrid = React.memo(({ dataset }: IDataSetProps) => {
+  const [isImporting, setIsImporting] = React.useState<boolean>(false);
+  const [importedFilesCount, setImportedFilesCount] = React.useState<number>(0);
+  const [filesCount, setFilesCount] = React.useState<number>(0);
+
+  function getDragDropEvents(): IDragDropEvents {
+    return {
+      canDrop: () => true,
+      onDrop: async (item?: any, event?: DragEvent) => {
+        event?.preventDefault();
+        const files = event?.dataTransfer?.files;
+        if (files) {
+          const targetEntityId = item.key;
+          setIsImporting(true);
+          setFilesCount(files.length);
+          for (let i = 0; i < files.length; i++) {
+            setImportedFilesCount(i);
+            await DataverseService.uploadFile(files[i], files.length, targetEntityId);
+          }
+        }
+        DataverseService.showNotificationPopup();
+        setIsImporting(false);
+        setFilesCount(0);
+        setImportedFilesCount(0);
+      },
+      onDragEnter: () => dragEnterClass,
+    };
+  }
   const [items, setItems] = React.useState<any>([]);
   const [columns, setColumns] = React.useState<any>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const dragDropEvents = getDragDropEvents();
   const { selection, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
-  const refreshGrid = (dataset: DataSet) => {
+  const refreshGrid = () => {
     setIsLoading(true);
     dataset.refresh();
   };
@@ -93,6 +109,11 @@ export const DataSetGrid = React.memo(({ dataset }: IDataSetProps) => {
     setItems(datasetItems);
   }, [dataset]);
 
+  const rootContainerStyle: React.CSSProperties = React.useMemo(() => ({
+    height,
+    width,
+  }), [width, height]);
+
   const _onRenderDetailsFooter: IDetailsListProps['onRenderDetailsFooter'] =
   (props: IDetailsFooterProps | undefined) => {
     if (props) {
@@ -137,37 +158,35 @@ export const DataSetGrid = React.memo(({ dataset }: IDataSetProps) => {
   };
 
   return (
-    <>
-      {
-        (() => {
-          if (!isLoading) {
-            return <Stack >
-              <Stack horizontal horizontalAlign="end" className={dataSetStyles.buttons}>
-                <CommandBar
-                  refreshGrid={refreshGrid}
-                  selectedRecordIds={selectedRecordIds}
-                ></CommandBar>
-              </Stack>
-              <Stack>
-                <DetailsList
-                  items = {items}
-                  columns = {columns}
-                  dragDropEvents = {dragDropEvents}
-                  onItemInvoked = {onItemInvoked}
-                  selection={selection}
-                  onRenderRow={_onRenderRow}
-                  onRenderDetailsHeader={_onRenderDetailsHeader}
-                  onRenderDetailsFooter= {_onRenderDetailsFooter}
-                >
-                </DetailsList>
-              </Stack>
-            </Stack>;
-          }
-          return <Spinner className={modalStyles.spinner}
-            size={SpinnerSize.large} />;
-        })()
-      }
-    </>);
+    <div className='draganddropgrid'>
+      {isImporting && <div className='dragloading'>
+        <Spinner size={ SpinnerSize.large }/>
+        <div>{`Imported ${importedFilesCount} of ${filesCount}`}</div>
+      </div>}
+      <Stack >
+        <Stack horizontal horizontalAlign="end" className={dataSetStyles.buttons}>
+          <CommandBar
+            isDisabled={isImporting}
+            refreshGrid={refreshGrid}
+            selectedRecordIds={selectedRecordIds}
+          ></CommandBar>
+        </Stack>
+        <Stack style={rootContainerStyle}>
+          <DetailsList
+            items={items}
+            columns={columns}
+            dragDropEvents={dragDropEvents}
+            onItemInvoked={onItemInvoked}
+            selection={selection}
+            onRenderRow={_onRenderRow}
+            onRenderDetailsHeader={_onRenderDetailsHeader}
+            onRenderDetailsFooter={_onRenderDetailsFooter}
+          >
+          </DetailsList>
+        </Stack>
+      </Stack>
+    </div>);
+
 });
 
 DataSetGrid.displayName = 'DataSetGrid';
