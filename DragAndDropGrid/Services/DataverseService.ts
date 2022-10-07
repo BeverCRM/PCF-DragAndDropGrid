@@ -127,11 +127,37 @@ export default {
     }
   },
 
-  openRecordCreateForm(): void {
-    const entityFormOptions = {
+  async getFieldSchemaName(entityName: string): Promise<string> {
+    // @ts-ignore
+    const contextPage = _context.page;
+
+    const response = await fetch(`${contextPage.getClientUrl()}/api/data/v8.2/EntityDefinitions` +
+    `(LogicalName='${contextPage.entityTypeName}')/OneToManyRelationships?$filter=` +
+     `ReferencingEntity eq '${entityName}'&$select=ReferencingAttribute`);
+
+    const data = await response.json();
+    return data.value[0].ReferencingAttribute;
+  },
+
+  async openRecordCreateForm(): Promise<void> {
+    const { contextInfo }: any = _context.mode;
+    const entityFormOptions: {entityName: string} = {
       entityName: _targetEntityType,
     };
-    _context.navigation.openForm(entityFormOptions).then(
+
+    const lookup: {id: string, name: string, entityType: string} = {
+      id: contextInfo.entityId,
+      name: contextInfo.entityRecordName,
+      entityType: contextInfo.entityTypeName,
+    };
+
+    const lookupFieldName: string = await this.getFieldSchemaName(entityFormOptions.entityName);
+
+    const formParameters: any = {
+      [lookupFieldName]: lookup,
+    };
+
+    _context.navigation.openForm(entityFormOptions, formParameters).then(
       (success: any) => {
         console.log(success);
       },

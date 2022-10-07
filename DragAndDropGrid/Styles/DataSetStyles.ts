@@ -37,15 +37,20 @@ export const dataSetStyles = mergeStyleSets({
 });
 
 export const dragEnterClass = mergeStyles({
-  'padding-top': '8px !important',
-  'padding-bottom': '53px !important',
+  'width': '100% !important',
+  'height': '100% !important',
   'border': 'solid 2px rgba(93, 104, 105, 0.62) !important',
-  'transition': 'background-color 300ms !important',
-  '-webkit-transition': 'background-color 300ms !important',
-  '-moz-transition': 'background-color 300ms !important',
-  '-o-transition': 'background-color 300ms !important',
-  'font-size': '21px !important',
+  'transition': 'background-color .0s, padding .0s !important',
+  '-webkit-transition': 'background-color .0s, padding .0s, font-size .40s !important',
+  '-moz-transition': 'background-color .0s, padding .0s, font-size .10s !important',
+  '-o-transition': 'background-color .0s, padding .0s, font-size .10s !important',
+  'font-size': '20px !important',
+  'color': 'black !important',
   'background-color': '#6666664a !important',
+
+  '.ms-DetailsRow-cell': {
+    'padding-top': '6px !important',
+  },
 });
 
 export const CommandBarButtonStyles: Partial<IButtonStyles> = {

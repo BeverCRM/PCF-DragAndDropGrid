@@ -20,7 +20,7 @@
 }
 
 .ms-Button--commandBar:hover .ms-Button-icon {
-  color: red;
+  color: black;
 }
 
 @media screen and (max-width: 500px) {
