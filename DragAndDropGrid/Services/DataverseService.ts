@@ -3,6 +3,7 @@ import { IInputs } from '../generated/ManifestTypes';
 
 let _context: ComponentFramework.Context<IInputs>;
 let _targetEntityType: string;
+type Entity = ComponentFramework.WebApi.Entity;
 
 const notificationOptions = {
   errorsCount: 0,
@@ -41,7 +42,19 @@ export default {
     fetchXml = `?fetchXml=${encodeURIComponent(fetchXml)}`;
     const recordRelatedNotes = await _context.webAPI.retrieveMultipleRecords('annotation',
       fetchXml);
-    return recordRelatedNotes;
+
+      const finalNotes = recordRelatedNotes.entities.filter((entity: Entity) =>
+        entity.filename !== undefined).map((entity: Entity) =>
+        ({
+          name: entity.filename,
+          fieldName: entity.filename,
+          key: entity.annotationid,
+          mimetype: entity.mimetype,
+          documentbody: entity.documentbody,
+        }),
+        );
+      
+    return finalNotes;
   },
 
   async getTargetEntityDisplayName() {
@@ -84,10 +97,10 @@ export default {
   showNotificationPopup() {
     if (notificationOptions.errorsCount === 0) {
       const message = notificationOptions.importedSucsessCount > 1
-        ? `${notificationOptions.importedSucsessCount} 
-        of ${notificationOptions.filesCount} files imported successfully`
-        : `${notificationOptions.importedSucsessCount} 
-        of ${notificationOptions.filesCount} file imported successfully`;
+        ? `${notificationOptions.importedSucsessCount}` +
+        ` of ${notificationOptions.filesCount} files imported successfully`
+        : `${notificationOptions.importedSucsessCount}` +
+        ` of ${notificationOptions.filesCount} file imported successfully`;
 
       _context.navigation.openAlertDialog({ text: message });
       notificationOptions.importedSucsessCount = 0;
@@ -182,7 +195,6 @@ export default {
           console.log('Dialog closed using Cancel button or X.');
         }
       });
-
   },
 
   async openNoteDeleteDialog(noteIds: string[]): Promise<void> {

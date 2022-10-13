@@ -10,5 +10,4 @@ export function downloadSelectedNotes(selectedRecords: any[]) {
     .then(content => {
       saveAs(content, 'Files.zip');
     });
-
 }
