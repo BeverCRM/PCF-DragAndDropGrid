@@ -22,7 +22,6 @@ export interface IDataSetProps {
 }
 
 export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps) => {
-
   const [isImporting, setIsImporting] = React.useState<boolean>(false);
   const [importedFilesCount, setImportedFilesCount] = React.useState<number>(0);
   const [filesCount, setFilesCount] = React.useState<number>(0);
@@ -62,7 +61,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   };
 
   React.useEffect(() => {
-    setIsLoading(false);
+    setTimeout(() => setIsLoading(false));
   }, [isLoading]);
 
   React.useEffect(() => {
@@ -163,6 +162,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
         <Spinner size={ SpinnerSize.large }/>
         <div>{`Imported ${importedFilesCount} of ${filesCount}`}</div>
       </div>}
+      {isLoading && <div className='dragloading'><Spinner size={ SpinnerSize.large }/></div>}
       <Stack >
         <Stack horizontal horizontalAlign="end" className={dataSetStyles.buttons}>
           <CommandBar
@@ -186,7 +186,6 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
         </Stack>
       </Stack>
     </div>);
-
 });
 
 DataSetGrid.displayName = 'DataSetGrid';

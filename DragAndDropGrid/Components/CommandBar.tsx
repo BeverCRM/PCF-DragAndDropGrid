@@ -1,4 +1,4 @@
-import { CommandBarButton, trProperties } from '@fluentui/react';
+import { CommandBarButton } from '@fluentui/react';
 import * as React from 'react';
 import DataverseService from '../Services/DataverseService';
 import { downloadSelectedNotes } from '../Services/ZipService';
@@ -53,7 +53,7 @@ export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICom
       iconProps={deleteIcon}
       styles={CommandBarButtonStyles}
       text="Delete"
-      onClick={() => { DataverseService.openRecordDeleteDialog(selectedRecordIds); }}
+      onClick={() => { if(selectedRecordIds.length !== 0) DataverseService.openRecordDeleteDialog(selectedRecordIds); }}
     />
   </>;
 };
