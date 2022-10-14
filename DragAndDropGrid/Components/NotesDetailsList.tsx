@@ -69,7 +69,7 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
               onItemInvoked={DataverseService.onCalloutItemInvoked}
               items={noteItems}
               selection={selection}
-              columns={[{key: 'name', fieldName: 'name', name: 'Name', minWidth: 50, }]}
+              columns={[{key: 'name', fieldName: 'name', name: 'Name', minWidth: 50, isMultiline: true}]}
             />
             <Stack className={modalStyles.buttons} gap={8} horizontal>
               <PrimaryButton
