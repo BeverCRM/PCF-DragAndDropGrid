@@ -171,12 +171,14 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
             selectedRecordIds={selectedRecordIds}
           ></CommandBar>
         </Stack>
+        <div className='datailsList'>
         <Stack style={rootContainerStyle}>
           <DetailsList
             items={items}
             columns={columns}
             dragDropEvents={dragDropEvents}
             onItemInvoked={onItemInvoked}
+            styles={{contentWrapper: {minHeight: dataset.paging.pageSize * 42}}}
             selection={selection}
             onRenderRow={_onRenderRow}
             onRenderDetailsHeader={_onRenderDetailsHeader}
@@ -184,6 +186,8 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
           >
           </DetailsList>
         </Stack>
+        {items.length === 0 && <span className='infoMessage'>No data available</span> }
+        </div>
       </Stack>
     </div>);
 });

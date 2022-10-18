@@ -12,7 +12,6 @@
   bottom: 0px;
   left: 0px;
   z-index: 1;
-  background-color: #6666664a;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,6 +20,22 @@
 
 .ms-Button--commandBar:hover .ms-Button-icon {
   color: black;
+}
+
+.draganddropgrid .datailsList{
+  position: relative;
+}
+
+.draganddropgrid .infoMessage{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
 }
 
 @media screen and (max-width: 500px) {
