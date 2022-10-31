@@ -1,25 +1,20 @@
 import { CommandBarButton } from '@fluentui/react';
 import * as React from 'react';
 import DataverseService from '../Services/DataverseService';
-import { downloadSelectedNotes } from '../Services/ZipService';
 import { addIcon, CommandBarButtonStyles, downloadIcon,
   refreshIcon, deleteIcon } from '../Styles/DataSetStyles';
 
 export interface ICommandBarProps {
   isDisabled: boolean;
   refreshGrid: () => void;
-  selectedRecordIds: string[];
+  downloadSelectedRecords: () => Promise<void>;
+  deleteSelectedRecords: () => Promise<void>;
 }
 
-export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICommandBarProps) => {
+export const CommandBar = ({ isDisabled, refreshGrid, downloadSelectedRecords,
+  deleteSelectedRecords }
+  :ICommandBarProps) => {
   const [entityName, setEntityName] = React.useState<any>([]);
-
-  async function downloadSelectedRecords(selectedRecordIds: string[]){
-    for ( const selectedRecordId of selectedRecordIds ){
-      const finalNotes = await DataverseService.getRecordRelatedNotes(selectedRecordId)
-      downloadSelectedNotes(finalNotes)
-     }
-  }
 
   React.useCallback(async () => {
     const targetEntityDisplayName = await DataverseService.getTargetEntityDisplayName();
@@ -38,7 +33,7 @@ export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICom
       disabled = { isDisabled }
       iconProps={downloadIcon}
       styles={CommandBarButtonStyles}
-      onClick={() => { downloadSelectedRecords(selectedRecordIds); }}
+      onClick={downloadSelectedRecords}
       text="Download"
     />
     <CommandBarButton
@@ -53,7 +48,7 @@ export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICom
       iconProps={deleteIcon}
       styles={CommandBarButtonStyles}
       text="Delete"
-      onClick={() => { if(selectedRecordIds.length !== 0) DataverseService.openRecordDeleteDialog(selectedRecordIds); }}
+      onClick={deleteSelectedRecords}
     />
   </>;
 };

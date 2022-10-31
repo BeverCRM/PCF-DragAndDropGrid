@@ -42,6 +42,7 @@ export const modalStyles = mergeStyleSets({
     display: 'flex',
     flexFlow: 'column nowrap',
     alignItems: 'stretch',
+    maxHeight: '600px',
   },
   header: [
     theme.fonts.xLargePlus,

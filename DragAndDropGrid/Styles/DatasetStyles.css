@@ -12,6 +12,7 @@
   bottom: 0px;
   left: 0px;
   z-index: 1;
+  background-color: #6666664a;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,6 +37,21 @@
   justify-content: center;
   align-items: center;
   color: #666;
+}
+
+.draganddropgrid .errorMessage{
+  margin-top: 5px;
+  text-align: center;
+}
+
+.draganddropgrid .errorIcone{
+  color: red;
+  font-size: 35px;
+}
+
+.downloadContainer{
+  text-align: center;
+  margin-top: 10px;
 }
 
 @media screen and (max-width: 500px) {
