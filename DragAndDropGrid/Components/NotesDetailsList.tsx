@@ -1,5 +1,7 @@
-import { DefaultButton, DetailsList, IconButton, Modal,
-  PrimaryButton, Spinner, SpinnerSize, Stack } from '@fluentui/react';
+import {
+  DefaultButton, DetailsList, IconButton, Modal,
+  PrimaryButton, Spinner, SpinnerSize, Stack,
+} from '@fluentui/react';
 import * as React from 'react';
 import DataverseService from '../Services/DataverseService';
 import { downloadSelectedNotes } from '../Services/ZipService';
@@ -10,11 +12,11 @@ import { useSelection } from './Selection';
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
 export interface INotesDetailsListProps {
-    dataset: DataSet;
-    targetEntityId: string;
+  dataset: DataSet;
+  targetEntityId: string;
 }
 
-export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsListProps) => {
+export const NotesDetailsList = ({ dataset, targetEntityId }: INotesDetailsListProps) => {
   const {
     selection,
     selectedItems,
@@ -39,7 +41,7 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
   React.useEffect(() => {
     if (isModalOpen) {
       setIsLoading(true);
-      DataverseService.getRecordRelatedNotes(targetEntityId).then(data => {
+      DataverseService.getRecordRelatedNotes(targetEntityId, false).then(data => {
         setNoteItems(data);
         setIsLoading(false);
       });
@@ -61,13 +63,15 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
     layerProps={modalLayerProps}
     containerClassName={modalStyles.container}
   >
-    <div className={modalStyles.header}>
-      <span> Attachments</span>
-      <IconButton
-        styles={iconButtonStyles}
-        iconProps={cancelIcon}
-        onClick={() => setIsModalOpen(false)}
-      />
+    <div className='navBarHeader'>
+      <div className={modalStyles.header}>
+        <span> Attachments</span>
+        <IconButton
+          styles={iconButtonStyles}
+          iconProps={cancelIcon}
+          onClick={() => setIsModalOpen(false)}
+        />
+      </div>
     </div>
     {
       (() => {
@@ -84,8 +88,11 @@ export const NotesDetailsList = ({ dataset, targetEntityId } : INotesDetailsList
                 onItemInvoked={DataverseService.onCalloutItemInvoked}
                 items={noteItems}
                 selection={selection}
-                columns={[{ key: 'name', fieldName: 'name',
-                  name: 'Name', minWidth: 50, isMultiline: true }]}
+                className={modalStyles.dataList}
+                columns={[{
+                  key: 'name', fieldName: 'name',
+                  name: 'Name', minWidth: 100, isMultiline: true,
+                }]}
               />
               <Stack className={modalStyles.buttons} gap={8} horizontal>
                 <PrimaryButton

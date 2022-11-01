@@ -28,10 +28,11 @@ export default {
     return await entityMetadataResponse.json();
   },
 
-  async getRecordRelatedNotes(targetEntityId: string) {
+  async getRecordRelatedNotes(targetEntityId: string, isDownloading: boolean) {
     let fetchXml: string = `
     <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
       <entity name="annotation">
+        ${isDownloading ? '<attribute name="documentbody"/>' : undefined}
         <attribute name="subject" />
         <attribute name="notetext" />
         <attribute name="filename" />
@@ -57,6 +58,7 @@ export default {
         fieldName: entity.filename,
         key: entity.annotationid,
         mimetype: entity.mimetype,
+        documentbody: entity.documentbody,
       }),
     );
   },

@@ -51,7 +51,18 @@
 
 .downloadContainer{
   text-align: center;
-  margin-top: 10px;
+  margin-top: 48px;
+}
+
+.navBarHeader{
+  background-color: white;
+  position: fixed;
+  width: 357px;
+  margin-top: -63px;
+}
+
+.ms-Modal-scrollableContent{
+   width: 357px;
 }
 
 @media screen and (max-width: 500px) {

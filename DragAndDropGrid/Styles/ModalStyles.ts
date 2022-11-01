@@ -58,7 +58,7 @@ export const modalStyles = mergeStyleSets({
   ],
   body: {
     flex: '4 4 auto',
-    padding: '0 24px 24px 24px',
+    padding: '0 33px 33px 33px',
     overflowY: 'hidden',
     selectors: {
       p: { margin: '14px 0' },
@@ -86,6 +86,10 @@ export const modalStyles = mergeStyleSets({
     display: 'flex',
     justifyContent: 'flex-end',
     marginTop: 20,
+  },
+  dataList: {
+    maxHeight: 400,
+    overflowX: 'hidden',
   },
 });
 
