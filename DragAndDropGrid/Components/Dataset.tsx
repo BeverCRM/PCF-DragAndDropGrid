@@ -34,6 +34,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   const [entityName, setEntityName] = React.useState<string>();
   const [columns, setColumns] = React.useState<any>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [canUseLoading, setCanUseLoading] = React.useState(false);
   const { selection, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
   function getDragDropEvents(): IDragDropEvents {
@@ -74,6 +75,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   }, []);
 
   const refreshGrid = () => {
+    setCanUseLoading(true);
     setIsLoading(true);
     dataset.refresh();
   };
@@ -92,7 +94,8 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
       if (isConfirmed) {
         setIsLoading(true);
         await DataverseService.deleteSelectedRecords(selectedRecordIds);
-        setIsLoading(false);
+        dataset.refresh();
+        setCanUseLoading(true);
       }
     }
   };
@@ -155,7 +158,10 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
     });
 
     setItems(datasetItems);
-    setIsLoading(false);
+    if (canUseLoading) {
+      setIsLoading(false);
+      setCanUseLoading(false);
+    }
   }, [dataset]);
 
   const rootContainerStyle: React.CSSProperties = React.useMemo(() => ({

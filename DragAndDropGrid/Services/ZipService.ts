@@ -5,29 +5,30 @@ import DataverseService from './DataverseService';
 export async function downloadSelectedNotes(selectedRecords: any[]): Promise<void> {
   const zip: JSZip = new JSZip();
   const dublicateFilesCount: {[key: string]: number} = {};
-  const dublicateMimtypes: {[key: string]: number} = {};
 
   selectedRecords.forEach((file: any) => {
-    const mimeType: string = file.mimetype.split('/')[1];
-    const fileName: string = file.name.split(`.${mimeType}`)[0];
-    dublicateFilesCount[fileName] = (dublicateFilesCount[fileName] || 0) + 1;
-    dublicateMimtypes[mimeType] = (dublicateMimtypes[mimeType] || 0) + 1;
+    const namee = file.name;
+    dublicateFilesCount[`${namee}`] =
+     (dublicateFilesCount[`${namee}`] || 0) + 1;
   });
 
   const keys: string[] = Object.keys(dublicateFilesCount);
   const values: number[] = Object.values(dublicateFilesCount);
-  const keysMimtype = Object.keys(dublicateMimtypes);
   const numberedFileNames: string[] = [];
 
   for (let i = 0; i < keys.length; i++) {
+    const splitFileName: any = keys[i].split('.');
+    const fileMimtype = splitFileName[splitFileName.length - 1];
+    const fileName = keys[i].split(`.${fileMimtype}`)[0];
+
     if (values[i] !== 1) {
       for (let j = 0; j < values[i]; j++) {
-        j !== 0 ? numberedFileNames.push(`${keys[i]} (${j}).${keysMimtype[i]}`)
-          : numberedFileNames.push(`${keys[i]}.${keysMimtype[i]}`);
+        j !== 0 ? numberedFileNames.push(`${fileName} (${j}).${fileMimtype}`)
+          : numberedFileNames.push(`${fileName}.${fileMimtype}`);
       }
     }
     else {
-      numberedFileNames.push(`${keys[i]}.${keysMimtype[i]}`);
+      numberedFileNames.push(`${fileName}.${fileMimtype}`);
     }
   }
 
