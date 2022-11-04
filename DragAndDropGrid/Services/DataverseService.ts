@@ -28,11 +28,11 @@ export default {
     return await entityMetadataResponse.json();
   },
 
-  async getRecordRelatedNotes(targetEntityId: string, isDownloading: boolean) {
+  async getRecordRelatedNotes(targetEntityId: string, attachmentExists: boolean) {
     let fetchXml: string = `
     <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
       <entity name="annotation">
-        ${isDownloading ? '<attribute name="documentbody"/>' : undefined}
+        ${attachmentExists ? '<attribute name="documentbody"/>' : undefined}
         <attribute name="subject" />
         <attribute name="notetext" />
         <attribute name="filename" />
@@ -51,16 +51,15 @@ export default {
     const recordRelatedNotes = await _context.webAPI.retrieveMultipleRecords('annotation',
       fetchXml);
 
-    return recordRelatedNotes.entities.filter((entity: Entity) =>
-      entity.filename !== undefined).map((entity: Entity) =>
-      ({
+    return recordRelatedNotes.entities
+      .filter((entity: Entity) => entity.filename !== undefined)
+      .map((entity: Entity) => ({
         name: entity.filename,
         fieldName: entity.filename,
         key: entity.annotationid,
         mimetype: entity.mimetype,
         documentbody: entity.documentbody,
-      }),
-    );
+      }));
   },
 
   async getSelectedNotes(selectedRecordIds: string[]) {
@@ -93,16 +92,15 @@ export default {
     const selectedNotes = await _context.webAPI.retrieveMultipleRecords('annotation',
       fetchXml);
 
-    return selectedNotes.entities.filter((entity: Entity) =>
-      entity.filename !== undefined).map((entity: Entity) =>
-      ({
+    return selectedNotes.entities
+      .filter((entity: Entity) => entity.filename !== undefined)
+      .map((entity: Entity) => ({
         name: entity.filename,
         fieldName: entity.filename,
         key: entity.annotationid,
         mimetype: entity.mimetype,
         documentbody: entity.documentbody,
-      }),
-    );
+      }));
   },
 
   async getTargetEntityDisplayName() {
@@ -232,29 +230,23 @@ File Name: ${file.name}  Error message: ${ex.message}`;
   },
 
   async openRecordDeleteDialog(): Promise<boolean> {
-    const confirmString = { text: `Do you want to delete selected ` +
-    `records ? You can't undo this action.`, title: 'Confirm Deletion' };
+    const confirmString = {
+      text: `Do you want to delete selected records ? You can't undo this action.`,
+      title: 'Confirm Deletion',
+    };
     const confirmOptions = { height: 200, width: 490 };
     return _context.navigation.openConfirmDialog(confirmString, confirmOptions).then(
-      async success => {
-        if (success.confirmed) {
-          return true;
-        }
-        return false;
-      });
+      async success => success.confirmed);
   },
 
   async openNoteDeleteDialog(): Promise<boolean> {
-    const confirmStrings = { text: `Do you want to delete selected notes?` +
-    ` You can't undo this action`, title: 'Confirm Deletion' };
+    const confirmStrings = {
+      text: `Do you want to delete selected notes? You can't undo this action`,
+      title: 'Confirm Deletion',
+    };
     const confirmOptions = { height: 200, width: 450 };
     return _context.navigation.openConfirmDialog(confirmStrings, confirmOptions).then(
-      async success => {
-        if (success.confirmed) {
-          return true;
-        }
-        return false;
-      });
+      async success => success.confirmed);
   },
 
   onCalloutItemInvoked(item: any): void {

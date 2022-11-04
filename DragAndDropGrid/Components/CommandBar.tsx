@@ -11,9 +11,14 @@ export interface ICommandBarProps {
   deleteSelectedRecords: () => Promise<void>;
 }
 
-export const CommandBar = ({ isDisabled, refreshGrid, downloadSelectedRecords,
-  deleteSelectedRecords }
-  :ICommandBarProps) => {
+export const CommandBar = (commandBarProps: ICommandBarProps) => {
+  const {
+    isDisabled,
+    refreshGrid,
+    downloadSelectedRecords,
+    deleteSelectedRecords,
+  } = commandBarProps;
+
   const [entityName, setEntityName] = React.useState<any>([]);
 
   React.useCallback(async () => {

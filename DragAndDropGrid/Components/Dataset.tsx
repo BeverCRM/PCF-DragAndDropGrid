@@ -10,7 +10,7 @@ import { noteColumnStyles } from '../Styles/ModalStyles';
 import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../Styles/DataSetStyles';
 import { NotesDetailsList } from './NotesDetailsList';
 import { CommandBar } from './CommandBar';
-import { downloadSelectedRecords } from '../Services/ZipService';
+import ZipService from '../Services/ZipService';
 
 import { IDetailsHeaderStyles, CheckboxVisibility,
   IDetailsRowStyles, DetailsHeader, DetailsRow } from '@fluentui/react';
@@ -30,7 +30,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   const [filesCount, setFilesCount] = React.useState<number>(0);
   const [isDownloading, setIsDownloading] = React.useState<boolean>(false);
   const [items, setItems] = React.useState<any>([]);
-  const [notes, setNotes] = React.useState<boolean>(true);
+  const [noteExists, setNoteExists] = React.useState<boolean>(true);
   const [entityName, setEntityName] = React.useState<string>();
   const [columns, setColumns] = React.useState<any>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -48,9 +48,9 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
           setIsImporting(true);
           setFilesCount(files.length);
           for (let i = 0; i < files.length; i++) {
-            const isErrored = await DataverseService.uploadFile(files[i], files.length,
+            const wasSuccessful = await DataverseService.uploadFile(files[i], files.length,
               targetEntityId);
-            isErrored ? setImportedFilesCount(i) : undefined;
+            wasSuccessful ? setImportedFilesCount(i) : undefined;
           }
         }
         DataverseService.showNotificationPopup();
@@ -66,7 +66,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   React.useEffect(() => {
     DataverseService.getEntityMetadata().then(
       (entityMetadata: any) => {
-        setNotes(entityMetadata.HasNotes);
+        setNoteExists(entityMetadata.HasNotes);
         setEntityName(entityMetadata.DisplayName.UserLocalizedLabel.Label);
       },
       (error: any) => {
@@ -83,7 +83,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   const downloadSelectedRecord = async (): Promise<void> => {
     if (selectedRecordIds.length !== 0) {
       setIsDownloading(true);
-      await downloadSelectedRecords(selectedRecordIds);
+      await ZipService.downloadSelectedRecords(selectedRecordIds);
       setIsDownloading(false);
     }
   };
@@ -212,7 +212,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
     return null;
   };
 
-  if (!notes) {
+  if (!noteExists) {
     return (
       <div className='draganddropgrid'>
         <Icon className='errorIcone' iconName="error"></Icon>

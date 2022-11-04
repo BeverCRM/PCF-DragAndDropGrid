@@ -4,7 +4,7 @@ import {
 } from '@fluentui/react';
 import * as React from 'react';
 import DataverseService from '../Services/DataverseService';
-import { downloadSelectedNotes } from '../Services/ZipService';
+import ZipService from '../Services/ZipService';
 import { modalStyles, cancelIcon,
   iconButtonStyles, notesButtonStyles, notesIcon, modalLayerProps } from '../Styles/ModalStyles';
 import { useSelection } from './Selection';
@@ -114,7 +114,7 @@ export const NotesDetailsList = ({ dataset, targetEntityId }: INotesDetailsListP
                     setDownload(true);
                     const notes =
                     await DataverseService.getSelectedNotes(selectedRecordIds);
-                    await downloadSelectedNotes(notes);
+                    await ZipService.downloadSelectedNotes(notes);
                     setDownload(false);
                   }
                 }}
