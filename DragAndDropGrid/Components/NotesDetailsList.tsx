@@ -63,7 +63,7 @@ export const NotesDetailsList = ({ dataset, targetEntityId }: INotesDetailsListP
     layerProps={modalLayerProps}
     containerClassName={modalStyles.container}
   >
-    <div className='navBarHeader'>
+    <div className='draganddropgrid-header-bar'>
       <div className={modalStyles.header}>
         <span> Attachments</span>
         <IconButton
@@ -94,29 +94,6 @@ export const NotesDetailsList = ({ dataset, targetEntityId }: INotesDetailsListP
                   name: 'Name', minWidth: 100, isMultiline: true,
                 }]}
               />
-              <Stack className={modalStyles.buttons} gap={8} horizontal>
-                <PrimaryButton
-                  onClick={async () => {
-                    if (selectedItems.length !== 0) {
-                      setDownload(true);
-                      const notes =
-                      await DataverseService.getSelectedNotes(selectedRecordIds);
-                      await downloadSelectedNotes(notes);
-                      setDownload(false);
-                    }
-                  }}
-                >Download</PrimaryButton>
-                <PrimaryButton
-                  onClick={() => {
-                    if (selectedItems.length !== 0) {
-                      openNoteDeleteDialog();
-                    }
-                  }}
-                >Delete</PrimaryButton>
-                <DefaultButton onClick={() => {
-                  setIsModalOpen(false);
-                }}>Cancel</DefaultButton>
-              </Stack>
             </div>;
           }
           return <div className={modalStyles.body}>
@@ -124,6 +101,37 @@ export const NotesDetailsList = ({ dataset, targetEntityId }: INotesDetailsListP
         }
         return <Spinner className={modalStyles.spinner}
           size={SpinnerSize.large} />;
+      })()
+    }
+    {
+      (() => {
+        if (!isLoading && noteItems.length > 0) {
+          return <div className="draganddropgrid-bottom-bar">
+            <Stack className={modalStyles.buttons} gap={8} horizontal>
+              <PrimaryButton
+                onClick={async () => {
+                  if (selectedItems.length !== 0) {
+                    setDownload(true);
+                    const notes =
+                    await DataverseService.getSelectedNotes(selectedRecordIds);
+                    await downloadSelectedNotes(notes);
+                    setDownload(false);
+                  }
+                }}
+              >Download</PrimaryButton>
+              <PrimaryButton
+                onClick={() => {
+                  if (selectedItems.length !== 0) {
+                    openNoteDeleteDialog();
+                  }
+                }}
+              >Delete</PrimaryButton>
+              <DefaultButton onClick={() => {
+                setIsModalOpen(false);
+              }}>Cancel</DefaultButton>
+            </Stack>
+          </div>;
+        }
       })()
     }
   </Modal></>;

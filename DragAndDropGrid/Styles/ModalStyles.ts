@@ -88,8 +88,7 @@ export const modalStyles = mergeStyleSets({
     marginTop: 20,
   },
   dataList: {
-    maxHeight: 400,
-    overflowX: 'hidden',
+    paddingBottom: '75px',
   },
 });
 
