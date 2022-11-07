@@ -2,7 +2,7 @@
 <ImportExportXml version="9.1.0.643" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SolutionManifest>
     <!-- Unique Name of Cds Solution-->
-    <UniqueName>DragAndDropGridTest</UniqueName>
+    <UniqueName>DragAndDropGrid</UniqueName>
     <LocalizedNames>
       <!-- Localized Solution Name in language code -->
       <LocalizedName description="DragAndDropGrid" languagecode="1033" />
