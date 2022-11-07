@@ -3,7 +3,7 @@ import * as saveAs from 'file-saver';
 import DataverseService from './DataverseService';
 
 export default {
-  duplicateFileNames(selectedRecords: any[]) {
+  numberDuplicateFiles(selectedRecords: any[]) {
     const duplicateFilesCount: {[key: string]: number} = {};
 
     selectedRecords.forEach((file: any) => {
@@ -40,7 +40,7 @@ export default {
 
   async  downloadSelectedNotes(selectedRecords: any[]): Promise<void> {
     const zip: JSZip = new JSZip();
-    const numberedFileNames = this.duplicateFileNames(selectedRecords);
+    const numberedFileNames = this.numberDuplicateFiles(selectedRecords);
 
     for (let i = 0; i < numberedFileNames.length; i++) {
       zip.file(numberedFileNames[i], selectedRecords[i].documentbody, { base64: true });

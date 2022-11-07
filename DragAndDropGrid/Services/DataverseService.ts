@@ -22,9 +22,9 @@ export default {
   async getEntityMetadata() {
     // @ts-ignore
     const contextPage = _context.page;
+    const clientUrl = contextPage.getClientUrl();
     const entityMetadataResponse =
-     await fetch(`${contextPage.getClientUrl()}` +
-     `/api/data/v9.0/EntityDefinitions(LogicalName='${_targetEntityType}')`);
+    await fetch(`${clientUrl}/api/data/v9.0/EntityDefinitions(LogicalName='${_targetEntityType}')`);
     return await entityMetadataResponse.json();
   },
 
@@ -147,10 +147,10 @@ File Name: ${file.name}  Error message: ${ex.message}`;
   showNotificationPopup() {
     if (notificationOptions.errorsCount === 0) {
       const message = notificationOptions.filesCount === 1
-        ? `${notificationOptions.importedSucsessCount}` +
-        ` of ${notificationOptions.filesCount} file imported successfully`
-        : `${notificationOptions.importedSucsessCount}` +
-        ` of ${notificationOptions.filesCount} files imported successfully`;
+        ? `${notificationOptions.importedSucsessCount}\
+         of ${notificationOptions.filesCount} file imported successfully`
+        : `${notificationOptions.importedSucsessCount}\
+         of ${notificationOptions.filesCount} files imported successfully`;
 
       _context.navigation.openAlertDialog({ text: message });
       notificationOptions.importedSucsessCount = 0;
@@ -194,9 +194,8 @@ File Name: ${file.name}  Error message: ${ex.message}`;
     // @ts-ignore
     const contextPage = _context.page;
 
-    const response = await fetch(`${contextPage.getClientUrl()}/api/data/v8.2/EntityDefinitions` +
-      `(LogicalName='${contextPage.entityTypeName}')/OneToManyRelationships?$filter=` +
-      `ReferencingEntity eq '${entityName}'&$select=ReferencingAttribute`);
+    // eslint-disable-next-line max-len
+    const response = await fetch(`${contextPage.getClientUrl()}/api/data/v8.2/EntityDefinitions (LogicalName='${contextPage.entityTypeName}')/OneToManyRelationships?$filter=ReferencingEntity eq '${entityName}'&$select=ReferencingAttribute`);
 
     const data = await response.json();
     return data.value[0].ReferencingAttribute;
@@ -236,7 +235,7 @@ File Name: ${file.name}  Error message: ${ex.message}`;
     };
     const confirmOptions = { height: 200, width: 490 };
     return _context.navigation.openConfirmDialog(confirmString, confirmOptions).then(
-      async success => success.confirmed);
+      success => success.confirmed);
   },
 
   async openNoteDeleteDialog(): Promise<boolean> {
@@ -246,7 +245,7 @@ File Name: ${file.name}  Error message: ${ex.message}`;
     };
     const confirmOptions = { height: 200, width: 450 };
     return _context.navigation.openConfirmDialog(confirmStrings, confirmOptions).then(
-      async success => success.confirmed);
+      success => success.confirmed);
   },
 
   onCalloutItemInvoked(item: any): void {
