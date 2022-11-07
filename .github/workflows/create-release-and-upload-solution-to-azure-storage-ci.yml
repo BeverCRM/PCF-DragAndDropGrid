@@ -1,0 +1,10 @@
+name: Create release and upload solution to Azure blob storage CI
+
+on:
+  push:
+    branches: release
+
+jobs:
+  main:
+    uses: BeverCRM/Workflow-Build-Release-Upload-CI/.github/workflows/build-release-upload-ci.yml@master
+    secrets: inherit

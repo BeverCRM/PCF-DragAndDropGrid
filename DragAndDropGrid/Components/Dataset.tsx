@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { DetailsList, IDetailsFooterProps, IDetailsListProps, IDragDropEvents,
-  Spinner, SpinnerSize, Stack } from '@fluentui/react';
+import {
+  DetailsList, IColumn, Icon, IDetailsFooterProps, IDetailsListProps, IDragDropEvents,
+  Link, Spinner, SpinnerSize, Stack,
+} from '@fluentui/react';
 import { GridFooter } from './Footer';
 import { useSelection } from './Selection';
 import DataverseService from '../Services/DataverseService';
@@ -8,6 +10,7 @@ import { noteColumnStyles } from '../Styles/ModalStyles';
 import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../Styles/DataSetStyles';
 import { NotesDetailsList } from './NotesDetailsList';
 import { CommandBar } from './CommandBar';
+import ZipService from '../Services/ZipService';
 
 import { IDetailsHeaderStyles, CheckboxVisibility,
   IDetailsRowStyles, DetailsHeader, DetailsRow } from '@fluentui/react';
@@ -22,10 +25,17 @@ export interface IDataSetProps {
 }
 
 export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps) => {
-
   const [isImporting, setIsImporting] = React.useState<boolean>(false);
   const [importedFilesCount, setImportedFilesCount] = React.useState<number>(0);
   const [filesCount, setFilesCount] = React.useState<number>(0);
+  const [isDownloading, setIsDownloading] = React.useState<boolean>(false);
+  const [items, setItems] = React.useState<any>([]);
+  const [noteExists, setNoteExists] = React.useState<boolean>(true);
+  const [entityName, setEntityName] = React.useState<string>();
+  const [columns, setColumns] = React.useState<any>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [canUseLoading, setCanUseLoading] = React.useState(false);
+  const { selection, selectedRecordIds, onItemInvoked } = useSelection(dataset);
 
   function getDragDropEvents(): IDragDropEvents {
     return {
@@ -38,8 +48,9 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
           setIsImporting(true);
           setFilesCount(files.length);
           for (let i = 0; i < files.length; i++) {
-            setImportedFilesCount(i);
-            await DataverseService.uploadFile(files[i], files.length, targetEntityId);
+            const wasSuccessful = await DataverseService.uploadFile(files[i], files.length,
+              targetEntityId);
+            wasSuccessful ? setImportedFilesCount(i) : undefined;
           }
         }
         DataverseService.showNotificationPopup();
@@ -50,23 +61,47 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
       onDragEnter: () => dragEnterClass,
     };
   }
-  const [items, setItems] = React.useState<any>([]);
-  const [columns, setColumns] = React.useState<any>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
   const dragDropEvents = getDragDropEvents();
-  const { selection, selectedRecordIds, onItemInvoked } = useSelection(dataset);
+  React.useEffect(() => {
+    DataverseService.getEntityMetadata().then(
+      (entityMetadata: any) => {
+        setNoteExists(entityMetadata.HasNotes);
+        setEntityName(entityMetadata.DisplayName.UserLocalizedLabel.Label);
+      },
+      (error: any) => {
+        console.log(error);
+      });
+  }, []);
 
   const refreshGrid = () => {
+    setCanUseLoading(true);
     setIsLoading(true);
     dataset.refresh();
   };
 
-  React.useEffect(() => {
-    setIsLoading(false);
-  }, [isLoading]);
+  const downloadSelectedRecord = async (): Promise<void> => {
+    if (selectedRecordIds.length !== 0) {
+      setIsDownloading(true);
+      await ZipService.downloadSelectedRecords(selectedRecordIds);
+      setIsDownloading(false);
+    }
+  };
+
+  const deleteSelectedRecord = async (): Promise<void> => {
+    if (selectedRecordIds.length !== 0) {
+      const isConfirmed = await DataverseService.openRecordDeleteDialog();
+      if (isConfirmed) {
+        setIsLoading(true);
+        await DataverseService.deleteSelectedRecords(selectedRecordIds);
+        dataset.refresh();
+        setCanUseLoading(true);
+      }
+    }
+  };
 
   React.useEffect(() => {
-    const datasetColumns = [dataset.columns.sort((column1, column2) =>
+    const datasetColumns = dataset.columns.sort((column1, column2) =>
       column1.order - column2.order).filter(column => !column.isHidden).map(column => ({
       name: column.displayName,
       fieldName: column.name,
@@ -74,7 +109,23 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
       minWidth: column.visualSizeFactor,
       key: column.name,
       isResizable: true,
-    }))];
+      onRender: (item: any, index: number, currentColumn: any) => {
+        const record = dataset.records[item.key];
+        const fieldContent = item[currentColumn.fieldName];
+        if (column['dataType'].includes('Lookup')) {
+          return <Link onClick={() => {
+            // @ts-ignore
+            const lookupReferance = record._record.fields[currentColumn.fieldName].reference;
+            dataset.openDatasetItem(lookupReferance);
+          }} >{fieldContent} </Link>;
+        }
+        else if (record.getNamedReference().name === fieldContent) {
+          return <Link onClick={() => dataset.openDatasetItem(record.getNamedReference())}>
+            {fieldContent}</Link>;
+        }
+        return fieldContent;
+      },
+    } as IColumn));
 
     const notesColumn = [
       {
@@ -87,13 +138,13 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
           const targetEntityId = item.key;
           return <NotesDetailsList
             dataset={dataset}
-            targetEntityId = {targetEntityId}
+            targetEntityId={targetEntityId}
           ></NotesDetailsList>;
         },
       },
     ];
 
-    const mergedColumns = [ ...datasetColumns[0], ...notesColumn ];
+    const mergedColumns = [...datasetColumns, ...notesColumn];
     setColumns(mergedColumns);
 
     const datasetItems = dataset.sortedRecordIds.map(id => {
@@ -107,6 +158,10 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
     });
 
     setItems(datasetItems);
+    if (canUseLoading) {
+      setIsLoading(false);
+      setCanUseLoading(false);
+    }
   }, [dataset]);
 
   const rootContainerStyle: React.CSSProperties = React.useMemo(() => ({
@@ -130,7 +185,6 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
         backgroundColor: 'white',
         fontSize: '12px',
         paddingTop: '0px',
-        display: 'flex',
         borderTop: '1px solid rgb(215, 215, 215)',
       };
 
@@ -142,6 +196,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
 
   const _onRenderRow: IDetailsListProps['onRenderRow'] = props => {
     const customStyles: Partial<IDetailsRowStyles> = {};
+
     if (props) {
 
       customStyles.root = {
@@ -157,36 +212,54 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
     return null;
   };
 
+  if (!noteExists) {
+    return (
+      <div className='draganddropgrid'>
+        <Icon className='errorIcone' iconName="error"></Icon>
+        <p className='errorMessage'>
+          Can&apos;t show control, because notes are not enabled for the {entityName} entity</p>
+      </div>
+    );
+  }
+
   return (
     <div className='draganddropgrid'>
       {isImporting && <div className='dragloading'>
-        <Spinner size={ SpinnerSize.large }/>
+        <Spinner size={SpinnerSize.large} />
         <div>{`Imported ${importedFilesCount} of ${filesCount}`}</div>
       </div>}
+      {isLoading ? <div className='dragloading'>
+        <Spinner size={SpinnerSize.large} /></div> : isDownloading &&
+      <div className='dragloading'>
+        <Spinner size={SpinnerSize.large} /><p>Downloading ...</p></div>}
       <Stack >
         <Stack horizontal horizontalAlign="end" className={dataSetStyles.buttons}>
           <CommandBar
             isDisabled={isImporting}
             refreshGrid={refreshGrid}
-            selectedRecordIds={selectedRecordIds}
+            downloadSelectedRecords={downloadSelectedRecord}
+            deleteSelectedRecords={deleteSelectedRecord}
           ></CommandBar>
         </Stack>
-        <Stack style={rootContainerStyle}>
-          <DetailsList
-            items={items}
-            columns={columns}
-            dragDropEvents={dragDropEvents}
-            onItemInvoked={onItemInvoked}
-            selection={selection}
-            onRenderRow={_onRenderRow}
-            onRenderDetailsHeader={_onRenderDetailsHeader}
-            onRenderDetailsFooter={_onRenderDetailsFooter}
-          >
-          </DetailsList>
-        </Stack>
+        <div className='datailsList'>
+          <Stack style={rootContainerStyle}>
+            <DetailsList
+              items={items}
+              columns={columns}
+              dragDropEvents={dragDropEvents}
+              onItemInvoked={onItemInvoked}
+              styles={{ contentWrapper: { minHeight: dataset.paging.pageSize * 42 } }}
+              selection={selection}
+              onRenderRow={_onRenderRow}
+              onRenderDetailsHeader={_onRenderDetailsHeader}
+              onRenderDetailsFooter={_onRenderDetailsFooter}
+            >
+            </DetailsList>
+          </Stack>
+          {items.length === 0 && <span className='infoMessage'>No data available</span>}
+        </div>
       </Stack>
     </div>);
-
 });
 
 DataSetGrid.displayName = 'DataSetGrid';

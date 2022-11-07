@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="BeverControls" constructor="DragAndDropGrid" version="0.0.3" display-name-key="DragAndDropGrid" description-key="DragAndDropGrid description" control-type="virtual" >
+  <control namespace="BeverControls" constructor="DragAndDropGrid" version="1.0.0" display-name-key="BeverControls.DragAndDropGrid" description-key="This control allows the user to drag and drop files onto entity records in the grid. The dropped files will be added as Dynamics 365 attachments." control-type="virtual" >
     <!--external-service-usage node declares whether this 3rd party PCF control is using external service or not, if yes, this control will be considered as premium and please also add the external domain it is using.
     If it is not using any external service, please set the enabled="false" and DO NOT add any domain below. The "enabled" will be false by default.
     Example1:
@@ -18,14 +18,14 @@
       -->
     </external-service-usage>
     <!-- dataset node represents a set of entity records on CDS; allow more than one datasets -->
-    <data-set name="dataset" display-name-key="Dataset_Display_Key">
+    <data-set name="dataset" display-name-key="Dataset">
       <!-- 'property-set' node represents a unique, configurable property that each record in the dataset must provide. -->
       <!-- UNCOMMENT TO ADD PROPERTY-SET NODE
       <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
       -->
     </data-set>
-    <property name='noteTitle' display-name-key='Note Title' description-key='Note_Title' of-type='SingleLine.Text' usage='input' required='true' />
-    <property name='noteDescription' display-name-key='Note Description' description-key='Note_Description' of-type='SingleLine.Text' usage='input' required='true' />
+    <property name='noteTitle' display-name-key='Note Title' description-key='Title of each Note (can be bound to entity fields)' of-type='SingleLine.Text' usage='input'/>
+    <property name='noteDescription' display-name-key='Note Description' description-key='Description of each Note (can be bound to entity fields)' of-type='SingleLine.Text' usage='input'/>
     <resources>
       <code path="index.ts" order="1"/>
       <platform-library name="React" version="16.8.6" />
