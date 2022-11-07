@@ -7,10 +7,18 @@ import { addIcon, CommandBarButtonStyles, downloadIcon,
 export interface ICommandBarProps {
   isDisabled: boolean;
   refreshGrid: () => void;
-  selectedRecordIds: string[];
+  downloadSelectedRecords: () => Promise<void>;
+  deleteSelectedRecords: () => Promise<void>;
 }
 
-export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICommandBarProps) => {
+export const CommandBar = (commandBarProps: ICommandBarProps) => {
+  const {
+    isDisabled,
+    refreshGrid,
+    downloadSelectedRecords,
+    deleteSelectedRecords,
+  } = commandBarProps;
+
   const [entityName, setEntityName] = React.useState<any>([]);
 
   React.useCallback(async () => {
@@ -30,7 +38,7 @@ export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICom
       disabled = { isDisabled }
       iconProps={downloadIcon}
       styles={CommandBarButtonStyles}
-      onClick={() => { }}
+      onClick={downloadSelectedRecords}
       text="Download"
     />
     <CommandBarButton
@@ -45,7 +53,7 @@ export const CommandBar = ({ isDisabled, refreshGrid, selectedRecordIds } : ICom
       iconProps={deleteIcon}
       styles={CommandBarButtonStyles}
       text="Delete"
-      onClick={() => { DataverseService.openRecordDeleteDialog(selectedRecordIds); }}
+      onClick={deleteSelectedRecords}
     />
   </>;
 };

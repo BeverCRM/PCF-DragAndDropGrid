@@ -24,8 +24,8 @@
       <property-set name="samplePropertySet" display-name-key="Property_Display_Key" description-key="Property_Desc_Key" of-type="SingleLine.Text" usage="bound" required="true" />
       -->
     </data-set>
-    <property name='noteTitle' display-name-key='Note Title' description-key='Note_Title' of-type='SingleLine.Text' usage='input' required='true' />
-    <property name='noteDescription' display-name-key='Note Description' description-key='Note_Description' of-type='SingleLine.Text' usage='input' required='true' />
+    <property name='noteTitle' display-name-key='Note Title' description-key='Note_Title' of-type='SingleLine.Text' usage='input'/>
+    <property name='noteDescription' display-name-key='Note Description' description-key='Note_Description' of-type='SingleLine.Text' usage='input'/>
     <resources>
       <code path="index.ts" order="1"/>
       <platform-library name="React" version="16.8.6" />
