@@ -1,4 +1,4 @@
-# PCF-DragAndDropGrid
+# Drag and Drop Grid
 
 This control allows the user to drag and drop files onto entity records in the grid. \
 The dropped files will be added as Dynamics 365 attachments.
