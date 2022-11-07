@@ -193,10 +193,14 @@ File Name: ${file.name}  Error message: ${ex.message}`;
   async getFieldSchemaName(entityName: string): Promise<string> {
     // @ts-ignore
     const contextPage = _context.page;
+    const clientUrl = contextPage.getClientUrl();
+    const logicalName = contextPage.entityTypeName;
 
-    // eslint-disable-next-line max-len
-    const response = await fetch(`${contextPage.getClientUrl()}/api/data/v8.2/EntityDefinitions (LogicalName='${contextPage.entityTypeName}')/OneToManyRelationships?$filter=ReferencingEntity eq '${entityName}'&$select=ReferencingAttribute`);
+    const endpoint = `EntityDefinitions(LogicalName='${logicalName}')/OneToManyRelationships`;
+    const options = `$filter=ReferencingEntity eq '${entityName}'&$select=ReferencingAttribute`;
+    const url = `${clientUrl}/api/data/v8.2/${endpoint}?${options}`;
 
+    const response = await fetch(url);
     const data = await response.json();
     return data.value[0].ReferencingAttribute;
   },
