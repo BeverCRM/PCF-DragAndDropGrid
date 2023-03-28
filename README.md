@@ -23,9 +23,9 @@ User can also select lines and download their related files by clicking on the s
 
 ![img4](https://user-images.githubusercontent.com/90428984/200522541-861601a4-58fe-444f-8db3-20f17857f606.png)
 
-[![Download-Btn](https://user-images.githubusercontent.com/90428984/196970215-5355b724-6ebc-4457-995b-d3f4ebb450cf.png)](https://marketplace.bevercrm.com/pcf-controls/DragAndDropGrid)
-
 <span type="ignore">
+
+[![Download-Btn](https://user-images.githubusercontent.com/90428984/196970215-5355b724-6ebc-4457-995b-d3f4ebb450cf.png)](https://marketplace.bevercrm.com/pcf-controls/DragAndDropGrid)
 
 # Demo Drag and Drop Grid PCF Control
 
