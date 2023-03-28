@@ -25,6 +25,10 @@ User can also select lines and download their related files by clicking on the s
 
 [![Download-Btn](https://user-images.githubusercontent.com/90428984/196970215-5355b724-6ebc-4457-995b-d3f4ebb450cf.png)](https://marketplace.bevercrm.com/pcf-controls/DragAndDropGrid)
 
+<span type="ignore">
+
 # Demo Drag and Drop Grid PCF Control
 
 [![youtube-timepicker](https://user-images.githubusercontent.com/90428984/200525905-185dec18-cf5e-4736-bf2e-7d0641500ff2.png)](https://www.youtube.com/watch?v=jvDp9eG5RCo&t=36s)
+
+</span>
