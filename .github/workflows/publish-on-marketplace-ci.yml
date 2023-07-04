@@ -11,4 +11,4 @@ jobs:
     with:
       control-title: Drag and Drop Grid
       control-youtube-video-url: https://www.youtube.com/watch?v=jvDp9eG5RCo
-      control-tags: Drag and Drop, Grid
+      control-tags: Drag and Drop, Grid, Dataset
