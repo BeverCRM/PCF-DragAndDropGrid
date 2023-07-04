@@ -1,6 +1,6 @@
 import * as JSZip from 'jszip';
 import * as saveAs from 'file-saver';
-import DataverseService from './DataverseService';
+import DataverseService from './dataverseService';
 
 export default {
   numberDuplicateFiles(selectedRecords: any[]) {

@@ -5,12 +5,12 @@ import {
 } from '@fluentui/react';
 import { GridFooter } from './Footer';
 import { useSelection } from './Selection';
-import DataverseService from '../services/DataverseService';
-import { noteColumnStyles } from '../styles/ModalStyles';
-import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../styles/DataSetStyles';
+import DataverseService from '../services/dataverseService';
+import { noteColumnStyles } from '../styles/modalStyles';
+import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../styles/dataSetStyles';
 import { NotesDetailsList } from './NotesDetailsList';
 import { CommandBar } from './CommandBar';
-import ZipService from '../services/ZipService';
+import ZipService from '../services/zipService';
 
 import { IDetailsHeaderStyles, CheckboxVisibility,
   IDetailsRowStyles, DetailsHeader, DetailsRow } from '@fluentui/react';

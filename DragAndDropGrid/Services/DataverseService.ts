@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, readFileAsync } from '../utils/Utils';
+import { arrayBufferToBase64, readFileAsync } from '../utils/utils';
 import { IInputs } from '../generated/ManifestTypes';
 
 let _context: ComponentFramework.Context<IInputs>;

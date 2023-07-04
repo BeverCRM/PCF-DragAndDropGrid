@@ -1,7 +1,7 @@
 import { IInputs, IOutputs } from './generated/ManifestTypes';
 import { DataSetGrid, IDataSetProps } from './components/Dataset';
 import * as React from 'react';
-import DataverseService from './services/DataverseService';
+import DataverseService from './services/dataverseService';
 
 export class DragAndDropGrid implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;

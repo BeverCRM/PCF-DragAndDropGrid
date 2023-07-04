@@ -1,8 +1,8 @@
 import { CommandBarButton } from '@fluentui/react';
 import * as React from 'react';
-import DataverseService from '../services/DataverseService';
+import DataverseService from '../services/dataverseService';
 import { addIcon, CommandBarButtonStyles, downloadIcon,
-  refreshIcon, deleteIcon } from '../styles/DataSetStyles';
+  refreshIcon, deleteIcon } from '../styles/dataSetStyles';
 
 export interface ICommandBarProps {
   isDisabled: boolean;

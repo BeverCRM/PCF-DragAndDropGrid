@@ -3,10 +3,10 @@ import {
   PrimaryButton, Spinner, SpinnerSize, Stack,
 } from '@fluentui/react';
 import * as React from 'react';
-import DataverseService from '../services/DataverseService';
-import ZipService from '../services/ZipService';
+import DataverseService from '../services/dataverseService';
+import ZipService from '../services/zipService';
 import { modalStyles, cancelIcon,
-  iconButtonStyles, notesButtonStyles, notesIcon, modalLayerProps } from '../styles/ModalStyles';
+  iconButtonStyles, notesButtonStyles, notesIcon, modalLayerProps } from '../styles/modalStyles';
 import { useSelection } from './Selection';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
