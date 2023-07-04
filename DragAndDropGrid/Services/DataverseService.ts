@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, readFileAsync } from '../Utils/Utils';
+import { arrayBufferToBase64, readFileAsync } from '../utils/Utils';
 import { IInputs } from '../generated/ManifestTypes';
 
 let _context: ComponentFramework.Context<IInputs>;
@@ -207,8 +207,9 @@ File Name: ${file.name}  Error message: ${ex.message}`;
 
   async openRecordCreateForm(): Promise<void> {
     const { contextInfo }: any = _context.mode;
-    const entityFormOptions: {entityName: string} = {
+    const entityFormOptions: {entityName: string, useQuickCreateForm: boolean} = {
       entityName: _targetEntityType,
+      useQuickCreateForm: true,
     };
 
     const lookup = {

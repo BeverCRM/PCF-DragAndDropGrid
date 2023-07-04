@@ -5,12 +5,12 @@ import {
 } from '@fluentui/react';
 import { GridFooter } from './Footer';
 import { useSelection } from './Selection';
-import DataverseService from '../Services/DataverseService';
-import { noteColumnStyles } from '../Styles/ModalStyles';
-import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../Styles/DataSetStyles';
+import DataverseService from '../services/DataverseService';
+import { noteColumnStyles } from '../styles/ModalStyles';
+import { dataSetStyles, detailsHeaderStyles, dragEnterClass } from '../styles/DataSetStyles';
 import { NotesDetailsList } from './NotesDetailsList';
 import { CommandBar } from './CommandBar';
-import ZipService from '../Services/ZipService';
+import ZipService from '../services/ZipService';
 
 import { IDetailsHeaderStyles, CheckboxVisibility,
   IDetailsRowStyles, DetailsHeader, DetailsRow } from '@fluentui/react';
@@ -172,6 +172,7 @@ export const DataSetGrid = React.memo(({ dataset, height, width }: IDataSetProps
   const _onRenderDetailsFooter: IDetailsListProps['onRenderDetailsFooter'] =
   (props: IDetailsFooterProps | undefined) => {
     if (props) {
+      // eslint-disable-next-line react/prop-types
       return <GridFooter dataset={dataset} selectedCount={props.selection.count}></GridFooter>;
     }
     return null;
