@@ -209,6 +209,7 @@ File Name: ${file.name}  Error message: ${ex.message}`;
     const { contextInfo }: any = _context.mode;
     const entityFormOptions: {entityName: string} = {
       entityName: _targetEntityType,
+      useQuickCreateForm: true
     };
 
     const lookup = {
