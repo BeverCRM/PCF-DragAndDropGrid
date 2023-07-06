@@ -2,15 +2,13 @@
 <ImportExportXml version="9.1.0.643" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SolutionManifest>
     <!-- Unique Name of Cds Solution-->
-    <UniqueName>DragAndDropGrid</UniqueName>
+    <UniqueName>Solution</UniqueName>
     <LocalizedNames>
       <!-- Localized Solution Name in language code -->
-      <LocalizedName description="DragAndDropGrid" languagecode="1033" />
+      <LocalizedName description="Solution" languagecode="1033" />
     </LocalizedNames>
-    <Descriptions>
-      <Description description="PCF - Drag and Drop Grid &#10; &#10;This control allows the user to drag and drop files onto entity records in the grid. &#10;The dropped files will be added as Dynamics 365 attachments. &#10;&#10;© 2022 Bever" languagecode="1033" />
-    </Descriptions>
-    <Version>1.0.0</Version>
+    <Descriptions />
+    <Version>1.0</Version>
     <!-- Solution Package Type: Unmanaged(0)/Managed(1)/Both(2)-->
     <Managed>2</Managed>
     <Publisher>
@@ -22,37 +20,37 @@
       </LocalizedNames>
       <Descriptions>
         <!-- Description of Cds Publisher in language code -->
-        <Description description="Bever helps small-sized and medium-sized businesses to digitize by using Dynamics 365 &amp; Power Platform." languagecode="1033" />
+        <Description description="Bever" languagecode="1033" />
       </Descriptions>
-      <EMailAddress>info@bevercrm.com</EMailAddress>
-      <SupportingWebsiteUrl>https://bevercrm.com</SupportingWebsiteUrl>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
       <!-- Customization Prefix for the Cds Publisher-->
       <CustomizationPrefix>bvr</CustomizationPrefix>
       <!-- Derived Option Value Prefix for the Customization Prefix of Cds Publisher -->
-      <CustomizationOptionValuePrefix>55180</CustomizationOptionValuePrefix>
+      <CustomizationOptionValuePrefix>10031</CustomizationOptionValuePrefix>
       <Addresses>
         <!-- Address of the Publisher-->
         <Address>
           <AddressNumber>1</AddressNumber>
           <AddressTypeCode>1</AddressTypeCode>
-          <City>Yerevan</City>
+          <City xsi:nil="true"></City>
           <County xsi:nil="true"></County>
-          <Country>Armenia</Country>
+          <Country xsi:nil="true"></Country>
           <Fax xsi:nil="true"></Fax>
           <FreightTermsCode xsi:nil="true"></FreightTermsCode>
           <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
           <Latitude xsi:nil="true"></Latitude>
-          <Line1>Abelian 6/4</Line1>
+          <Line1 xsi:nil="true"></Line1>
           <Line2 xsi:nil="true"></Line2>
           <Line3 xsi:nil="true"></Line3>
           <Longitude xsi:nil="true"></Longitude>
           <Name xsi:nil="true"></Name>
-          <PostalCode>0038</PostalCode>
+          <PostalCode xsi:nil="true"></PostalCode>
           <PostOfficeBox xsi:nil="true"></PostOfficeBox>
           <PrimaryContactName xsi:nil="true"></PrimaryContactName>
           <ShippingMethodCode>1</ShippingMethodCode>
           <StateOrProvince xsi:nil="true"></StateOrProvince>
-          <Telephone1>+374 (77) 590071</Telephone1>
+          <Telephone1 xsi:nil="true"></Telephone1>
           <Telephone2 xsi:nil="true"></Telephone2>
           <Telephone3 xsi:nil="true"></Telephone3>
           <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
@@ -90,9 +88,7 @@
         </Address>
       </Addresses>
     </Publisher>
-    <RootComponents>
-      <RootComponent type="66" schemaName="bvr_BeverControls.DragAndDropGrid" behavior="0" />
-    </RootComponents>
+    <RootComponents />
     <MissingDependencies />
   </SolutionManifest>
 </ImportExportXml>
